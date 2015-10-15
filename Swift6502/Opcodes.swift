@@ -39,21 +39,24 @@ func JSR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func LDA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 extension CpuState.StatusRegister {
-    mutating func setSZ(value : Int8) {
-        if   value == 0 { self.insert(.Z) }
-        else            { self.remove(.Z) }
+    func setSZ(value : Int8) -> CpuState.StatusRegister {
+        var temp = self
         
-        if   value  < 0 { self.insert(.S) }
-        else            { self.remove(.S) }
+        if   value == 0 { temp.insert(.Z) }
+        else            { temp.remove(.Z) }
+        
+        if   value  < 0 { temp.insert(.S) }
+        else            { temp.remove(.S) }
+        
+        return temp
     }
 }
 
 func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let v = UInt8(value)
-    var n = c
-    n.X = v
-    n.SR.setSZ(Int8(bitPattern:v))
-    return n
+    return c.change(
+        X:  UInt8(value),
+        SR: c.SR.setSZ(Int8(bitPattern:UInt8(value)))
+    )
 }
 
 func LDY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }

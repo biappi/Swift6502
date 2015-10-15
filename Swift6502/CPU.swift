@@ -65,6 +65,24 @@ struct CpuState : Equatable {
     var SP : UInt8          = 0xFF
     var PC : UInt16         = 0x0000
     var SR : StatusRegister = StatusRegister(rawValue: 0x30)
+
+    func change(
+        A A : UInt8?  = nil,
+        X   : UInt8?  = nil,
+        Y   : UInt8?  = nil,
+        SP  : UInt8?  = nil,
+        PC  : UInt16? = nil,
+        SR  : StatusRegister? = nil
+    ) -> CpuState {
+        return CpuState(
+            A:  A  ?? self.A,
+            X:  X  ?? self.X,
+            Y:  Y  ?? self.Y,
+            SP: SP ?? self.SP,
+            PC: PC ?? self.PC,
+            SR: SR ?? self.SR
+        )
+    }
 }
 
 func ==(lhs: CpuState, rhs: CpuState) -> Bool {
