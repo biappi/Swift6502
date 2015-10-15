@@ -76,7 +76,9 @@ func SEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func SED(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func SEI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c
+    return c.change(
+        SR: c.SR.union(.I)
+    )
 }
 
 func STA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
