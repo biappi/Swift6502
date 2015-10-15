@@ -9,7 +9,7 @@
 extension CpuState {
     func description() -> String {
         return String(
-            format:" PC  SP SR AC XR YR\n%04X %02X %02X %02X %02X %02X ",
+            format:" PC  SP AC XR YR SR\n%04X %02X %02X %02X %02X %02X ",
             PC,
             SP,
             A,
