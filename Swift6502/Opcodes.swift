@@ -6,6 +6,7 @@
 //  Copyright © 2015 Antonio Malara. All rights reserved.
 //
 
+
 func ADC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func AND(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func ASL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
@@ -36,7 +37,11 @@ func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func JMP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func JSR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func LDA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func LDX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func LDX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c
+}
+
 func LDY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func LSR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func NOP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }

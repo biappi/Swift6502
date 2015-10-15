@@ -33,7 +33,7 @@ extension Memory {
 
 typealias OpcodeValue            = UInt16
 typealias OpcodeImplementation   = (OpcodeValue, CpuState, Memory) -> (CpuState)
-typealias AddressingModeResolver = (cpuState: CpuState, memory: Memory) -> OpcodeValue
+typealias AddressingModeResolver = (CpuState, Memory) -> OpcodeValue
 
 struct AddressingMode {
     let name            : String
@@ -41,7 +41,7 @@ struct AddressingMode {
     let resolve         : AddressingModeResolver
 }
 
-struct CpuState {
+struct CpuState : Equatable {
     struct StatusRegister : OptionSetType {
         let rawValue : UInt8
         
@@ -62,15 +62,35 @@ struct CpuState {
     var A  : UInt8          = 0x00
     var X  : UInt8          = 0x00
     var Y  : UInt8          = 0x00
-    var SP : UInt8          = 0x00
+    var SP : UInt8          = 0xFF
     var PC : UInt16         = 0x0000
-    var SR : StatusRegister = .None
+    var SR : StatusRegister = StatusRegister(rawValue: 0x30)
 }
+
+func ==(lhs: CpuState, rhs: CpuState) -> Bool {
+    return (
+        lhs.A  == rhs.A &&
+        lhs.X  == rhs.X &&
+        lhs.Y  == rhs.Y &&
+        lhs.SP == rhs.SP &&
+        lhs.PC == rhs.PC &&
+        lhs.SR.rawValue == rhs.SR.rawValue
+    )
+}
+
+
+extension CpuState {
+    var A16  : UInt16 { get { return UInt16(self.A);  } }
+    var X16  : UInt16 { get { return UInt16(self.X);  } }
+    var Y16  : UInt16 { get { return UInt16(self.Y);  } }
+    var SP16 : UInt16 { get { return UInt16(self.SP); } }
+}
+
 
 func CpuStep(cpuState: CpuState , memory: Memory) -> CpuState {
     let code     = Int(memory.byteAt(cpuState.PC))
     let opcode   = Opcodes[code]
-    let value    = opcode.1.resolve(cpuState: cpuState, memory: memory)
+    let value    = opcode.1.resolve(cpuState, memory)
     var newState = opcode.2(value, c: cpuState, m: memory)
     newState.PC += opcode.1.instructionSize
     
