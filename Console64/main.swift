@@ -44,14 +44,6 @@ class C64MemoryLayout : Memory {
     }
 }
 
-let c64memory = C64MemoryLayout(
-    kernal: kernal,
-    basic:  basic
-)
-
-var cpuState = CpuState()
-
-cpuState.PC = c64memory.wordAt(0xfffc)
 
 let c64boottrace = [
     CpuState(A: 0x00, X: 0x00, Y: 0x00, SP: 0xff, PC: 0xfce2, SR: CpuState.StatusRegister(rawValue: 0x30)),
@@ -156,8 +148,16 @@ let c64boottrace = [
     CpuState(A: 0x00, X: 0xff, Y: 0x08, SP: 0xfd, PC: 0xfd59, SR: CpuState.StatusRegister(rawValue: 0x35)),
 ]
 
+let c64memory = C64MemoryLayout(
+    kernal: kernal,
+    basic:  basic
+)
+
+var cpuState = CpuState()
+
+cpuState.PC = c64memory.wordAt(0xfffc)
+
 for correctState in c64boottrace {
-    cpuState = CpuStep(cpuState, memory: c64memory)
     let correct = cpuState == correctState
 
     print(correctState.description())
@@ -165,11 +165,13 @@ for correctState in c64boottrace {
     print("")
     
     if correct {
-        print ("√")
+        print ("√\n")
     }
     else {
         print ("X")
         break
     }
+    
+    cpuState = CpuStep(cpuState, memory: c64memory)
 }
 
