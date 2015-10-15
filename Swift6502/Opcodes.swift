@@ -38,8 +38,22 @@ func JMP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func JSR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func LDA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
-func LDX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c
+extension CpuState.StatusRegister {
+    mutating func setSZ(value : Int8) {
+        if   value == 0 { self.insert(.Z) }
+        else            { self.remove(.Z) }
+        
+        if   value  < 0 { self.insert(.S) }
+        else            { self.remove(.S) }
+    }
+}
+
+func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = UInt8(value)
+    var n = c
+    n.X = v
+    n.SR.setSZ(Int8(bitPattern:v))
+    return n
 }
 
 func LDY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
@@ -57,7 +71,11 @@ func RTS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func SBC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func SEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func SED(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func SEI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func SEI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c
+}
+
 func STA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func STX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func STY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
@@ -67,4 +85,5 @@ func TSX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func TXA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func TXS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func TYA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
 func ill(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }

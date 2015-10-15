@@ -50,13 +50,13 @@ struct CpuState : Equatable {
         }
         
         static let None = StatusRegister(rawValue: 0b00000000)
-        static let C    = StatusRegister(rawValue: 0b00000001)
-        static let Z    = StatusRegister(rawValue: 0b00000010)
-        static let I    = StatusRegister(rawValue: 0b00000100)
-        static let D    = StatusRegister(rawValue: 0b00001000)
-        static let B    = StatusRegister(rawValue: 0b00010000)
-        static let V    = StatusRegister(rawValue: 0b01000000)
-        static let F    = StatusRegister(rawValue: 0b10000000)
+        static let C    = StatusRegister(rawValue: 0b00000001) // Carry
+        static let Z    = StatusRegister(rawValue: 0b00000010) // Zero
+        static let I    = StatusRegister(rawValue: 0b00000100) // Interrupt
+        static let D    = StatusRegister(rawValue: 0b00001000) // Decimal
+        static let B    = StatusRegister(rawValue: 0b00010000) // BRK
+        static let V    = StatusRegister(rawValue: 0b01000000) // Overflow
+        static let S    = StatusRegister(rawValue: 0b10000000) // Sign
     }
     
     var A  : UInt8          = 0x00
