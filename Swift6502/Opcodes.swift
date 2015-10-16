@@ -65,7 +65,12 @@ func JSR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return state.change(PC: v)
 }
 
-func LDA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func LDA(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.change(
+        A:  UInt8(value),
+        SR: c.SR.setSZ(Int8(bitPattern:UInt8(value)))
+    )
+}
 
 func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(

@@ -159,19 +159,24 @@ cpuState.PC = c64memory.wordAt(0xfffc)
 
 for correctState in c64boottrace {
     let correct = cpuState == correctState
-
-    print(correctState.description())
-    print(cpuState.description())
-    print("")
     
     if correct {
         print ("√\n")
     }
     else {
+        print(correctState.description())
+        print(cpuState.description())
+        print("")
+
         print ("X")
         break
     }
     
+    let code     = Int(c64memory.byteAt(cpuState.PC))
+    let opcode   = Opcodes[code]
+    
+    print(String(format:"Code %02x, \(opcode.0) \(opcode.1.name)", code))
+
     cpuState = CpuStep(cpuState, memory: c64memory)
 }
 

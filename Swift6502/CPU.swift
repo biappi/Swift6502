@@ -6,8 +6,6 @@
 //  Copyright © 2015 Antonio Malara. All rights reserved.
 //
 
-import Foundation
-
 typealias Address = UInt16
 
 protocol Memory {
@@ -96,14 +94,12 @@ func ==(lhs: CpuState, rhs: CpuState) -> Bool {
     )
 }
 
-
 extension CpuState {
     var A16  : UInt16 { get { return UInt16(self.A);  } }
     var X16  : UInt16 { get { return UInt16(self.X);  } }
     var Y16  : UInt16 { get { return UInt16(self.Y);  } }
     var SP16 : UInt16 { get { return UInt16(self.SP) + 0x0100; } }
 }
-
 
 func CpuStep(cpuState: CpuState, memory: Memory) -> CpuState {
     let code     = Int(memory.byteAt(cpuState.PC))
@@ -113,7 +109,5 @@ func CpuStep(cpuState: CpuState, memory: Memory) -> CpuState {
     let newState = cpuState.change(PC: newPC)
     let endState = opcode.2(value, c: newState, m: memory)
     
-    print(String(format:"Code %02x, \(opcode.0) \(opcode.1.name)", code))
-
     return endState
 }
