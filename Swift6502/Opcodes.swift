@@ -19,6 +19,27 @@ extension CpuState.StatusRegister {
         
         return temp
     }
+    
+    func compare(v: OpcodeValue, register: UInt8) -> CpuState.StatusRegister {
+        var temp          = self
+        let registerValue = Int8(bitPattern: register)
+        let byteValue     = Int8(bitPattern: UInt8(v & 0xFF))
+        
+        temp.remove([.Z, .S, .C])
+        
+        if registerValue == byteValue {
+            temp.insert([.C, .Z])
+        }
+        else if registerValue > byteValue {
+            temp.insert(.C)
+        }
+        
+        if (registerValue - byteValue) < 0 {
+            temp.insert(.S)
+        }
+        
+        return temp
+    }
 }
 
 extension CpuState {
@@ -39,7 +60,16 @@ func BCS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BEQ(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BIT(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BMI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func BNE(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func BNE(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    if c.SR.isSupersetOf(.Z) {
+        return c
+    }
+    else {
+        return c.change(PC: v)
+    }
+}
+
 func BPL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BRK(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BVC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
@@ -48,7 +78,11 @@ func CLC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CLD(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CLI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CLV(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func CMP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func CMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.change(SR: c.SR.compare(v, register: c.A))
+}
+
 func CPX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CPY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func DEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }

@@ -106,6 +106,6 @@ let AddressingModeRelative = AddressingMode(
         let positive = sign != 0x80
         let offset   = positive ? Int(rest) : -(Int(rest ^ 0xFF) + 1)
         let address  = UInt16(Int(cpu.PC + 2) + offset)
-        return mem.wordAt(address)
+        return address
     }
 )
