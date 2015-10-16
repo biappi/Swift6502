@@ -95,7 +95,13 @@ func CPX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CPY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func DEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
-func DEX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func DEX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = c.X &- 1
+    return c.change(
+        X:  v,
+        SR: c.SR.setSZ(Int8(bitPattern:v))
+    )
+}
 
 func DEY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func EOR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
