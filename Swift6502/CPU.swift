@@ -32,7 +32,7 @@ extension Memory {
 }
 
 typealias OpcodeValue            = UInt16
-typealias OpcodeImplementation   = (OpcodeValue, CpuState, Memory) -> (CpuState)
+typealias OpcodeImplementation   = (OpcodeValue, CpuState, Memory) -> CpuState
 typealias AddressingModeResolver = (CpuState, Memory) -> OpcodeValue
 
 struct AddressingMode {
@@ -101,18 +101,19 @@ extension CpuState {
     var A16  : UInt16 { get { return UInt16(self.A);  } }
     var X16  : UInt16 { get { return UInt16(self.X);  } }
     var Y16  : UInt16 { get { return UInt16(self.Y);  } }
-    var SP16 : UInt16 { get { return UInt16(self.SP); } }
+    var SP16 : UInt16 { get { return UInt16(self.SP) + 0x0100; } }
 }
 
 
-func CpuStep(cpuState: CpuState , memory: Memory) -> CpuState {
+func CpuStep(cpuState: CpuState, memory: Memory) -> CpuState {
     let code     = Int(memory.byteAt(cpuState.PC))
     let opcode   = Opcodes[code]
     let value    = opcode.1.resolve(cpuState, memory)
-    var newState = opcode.2(value, c: cpuState, m: memory)
-    newState.PC += opcode.1.instructionSize
+    let newPC    = cpuState.PC + opcode.1.instructionSize
+    let newState = cpuState.change(PC: newPC)
+    let endState = opcode.2(value, c: newState, m: memory)
     
     print(String(format:"Code %02x, \(opcode.0) \(opcode.1.name)", code))
 
-    return newState
+    return endState
 }

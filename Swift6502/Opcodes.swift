@@ -7,6 +7,30 @@
 //
 
 
+extension CpuState.StatusRegister {
+    func setSZ(value : Int8) -> CpuState.StatusRegister {
+        var temp = self
+        
+        if   value == 0 { temp.insert(.Z) }
+        else            { temp.remove(.Z) }
+        
+        if   value  < 0 { temp.insert(.S) }
+        else            { temp.remove(.S) }
+        
+        return temp
+    }
+}
+
+extension CpuState {
+    func pushStackWord(v: UInt16, into memory: Memory) -> CpuState {
+        memory.changeWordAt(self.SP16, to: self.PC)
+        return self.change(
+            SP: self.SP - 2
+        )
+        
+    }
+}
+
 func ADC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func AND(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func ASL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
@@ -35,22 +59,13 @@ func INC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func INX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func JMP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func JSR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func LDA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
-extension CpuState.StatusRegister {
-    func setSZ(value : Int8) -> CpuState.StatusRegister {
-        var temp = self
-        
-        if   value == 0 { temp.insert(.Z) }
-        else            { temp.remove(.Z) }
-        
-        if   value  < 0 { temp.insert(.S) }
-        else            { temp.remove(.S) }
-        
-        return temp
-    }
+func JSR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let state = c.pushStackWord(c.PC, into: m)
+    return state.change(PC: v)
 }
+
+func LDA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(

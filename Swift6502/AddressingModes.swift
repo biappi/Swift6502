@@ -34,7 +34,7 @@ let AddressingModeAccumulator = AddressingMode(
 let AddressingModeAbsolute = AddressingMode(
     name: "AddressingModeAbsolute",
     instructionSize: 3,
-    resolve: { (cpu, mem) in return mem.wordAt(mem.wordAt(cpu.PC + 1)) }
+    resolve: { (cpu, mem) in return mem.wordAt(cpu.PC + 1) }
 )
 
 let AddressingModeZeroPageX = AddressingMode(
