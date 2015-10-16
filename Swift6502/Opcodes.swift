@@ -48,7 +48,15 @@ extension CpuState {
         return self.change(
             SP: self.SP - 2
         )
-        
+    }
+
+    func popStackWord(memory: Memory) -> (UInt16, CpuState) {
+        let cpuState = self.change(SP: self.SP + 2)
+
+        return (
+            memory.wordAt(cpuState.SP16),
+            cpuState
+        )
     }
 }
 
@@ -86,7 +94,9 @@ func CMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 func CPX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CPY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func DEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
 func DEX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
 func DEY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func EOR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func INC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
@@ -124,7 +134,12 @@ func PLP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func ROL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func ROR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func RTI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func RTS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func RTS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let (newPC, newState) = c.popStackWord(m)
+    return newState.change(PC: newPC)
+}
+
 func SBC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func SEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func SED(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
