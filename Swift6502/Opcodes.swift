@@ -51,7 +51,7 @@ extension CpuState.StatusRegister {
 
 extension CpuState {
     func pushStackWord(v: UInt16, into memory: Memory) -> CpuState {
-        memory.changeWordAt(self.SP16, to: self.PC)
+        memory.changeWordAt(self.SP16, to: v)
         return self.change(
             SP: self.SP - 2
         )
