@@ -44,6 +44,55 @@ class C64MemoryLayout : Memory {
     }
 }
 
+var failed = 0
+var success = 0
+
+for test in tests_6502 {
+    var ok = true
+    
+    let mem = C64MemoryLayout(
+        kernal: kernal,
+        basic:  basic
+    )
+    
+    for (addr, value) in test.pre.mem {
+        mem.changeByteAt(addr, to: value)
+    }
+    
+    let state = CpuStep(test.pre.cpu, memory: mem)
+    
+    print("Test \(test.name)")
+    
+    if state != test.post.cpu {
+        print("Got state:")
+        print(state.description())
+        print("Expected:")
+        print(test.post.cpu.description())
+        ok = false
+    }
+    
+    for (addr, value) in test.post.mem {
+        if mem.byteAt(addr) != value {
+            print("Failed, address \(addr)")
+            print("Computed \(mem.byteAt(addr))")
+            print("Expected \(value)")
+            ok = false
+        }
+    }
+    
+    if (ok) {
+        print("Succeded\n\n")
+        success++
+    }
+    else {
+        print("Failed\n\n")
+        failed++
+    }
+}
+
+print ("success: \(success) fail: \(failed)")
+
+exit(0)
 
 let c64boottrace = [
     CpuState(A: 0x00, X: 0x00, Y: 0x00, SP: 0xff, PC: 0xfce2, SR: CpuState.StatusRegister(rawValue: 0x30)),
