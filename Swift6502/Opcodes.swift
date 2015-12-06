@@ -195,7 +195,16 @@ func SEI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func STA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func STA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    switch v {
+    case .Address(let a):
+        m.changeByteAt(a, to: c.A)
+        return c
+    default:
+        return c
+    }
+}
+
 func STX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func STY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func TAX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
