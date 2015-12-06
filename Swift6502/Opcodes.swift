@@ -236,7 +236,13 @@ func STX(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c
 }
 
-func STY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func STY(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    switch v {
+    case .Address(let a): m.changeByteAt(a, to: c.Y)
+    default: return c
+    }
+    return c
+}
 
 func TAX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
