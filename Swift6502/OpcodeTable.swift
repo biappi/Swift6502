@@ -6,7 +6,7 @@
 //  Copyright © 2015 Antonio Malara. All rights reserved.
 //
 
-let Opcodes = [
+let Opcodes : [(String, AddressingMode, OpcodeImplementation)] = [
     ("BRK", AddressingModeImplied, BRK),
     ("ORA", AddressingModeIndexedX, ORA),
     ("???", AddressingModeImplied, ill),

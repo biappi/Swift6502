@@ -16,55 +16,55 @@ extension Memory {
 let AddressingModeImplied = AddressingMode(
     name: "AddressingModeImplied",
     instructionSize: 1,
-    resolve: { _ in return 0 }
+    resolve: { _ in return .Implied }
 )
 
 let AddressingModeImmediate = AddressingMode(
     name: "AddressingModeImmediate",
     instructionSize: 2,
-    resolve: { (cpu, mem) in return UInt16(mem.byteAt(cpu.PC + 1)) }
+    resolve: { (cpu, mem) in return .Address(cpu.PC + 1) }
 )
 
 let AddressingModeZeroPage = AddressingMode(
     name: "AddressingModeZeroPage",
     instructionSize: 2,
-    resolve: { (cpu, mem) in return mem.wordAt(UInt16(mem.byteAt(cpu.PC + 1))) }
+    resolve: { (cpu, mem) in return .Address(cpu.PC + 1) }
 )
 
 let AddressingModeAccumulator = AddressingMode(
     name: "AddressingModeAccumulator",
     instructionSize: 1,
-    resolve: { (cpu, _) in return cpu.A16 }
+    resolve: { (cpu, _) in return .Immediate(cpu.A) }
 )
 
 let AddressingModeAbsolute = AddressingMode(
     name: "AddressingModeAbsolute",
     instructionSize: 3,
-    resolve: { (cpu, mem) in return mem.wordAt(cpu.PC + 1) }
+    resolve: { (cpu, mem) in return .Address(mem.wordAt(cpu.PC + 1)) }
 )
 
 let AddressingModeZeroPageX = AddressingMode(
     name: "AddressingModeZeroPageX",
     instructionSize: 2,
-    resolve: { (cpu, mem) in return mem.byte16At(UInt16(mem.byteAt(cpu.PC + 1)) + cpu.X16) }
+    resolve: { (cpu, mem) in return .Address(UInt16(mem.byteAt(cpu.PC + 1)) + cpu.X16) }
 )
 
 let AddressingModeZeroPageY = AddressingMode(
     name: "AddressingModeZeroPageY",
     instructionSize: 2,
-    resolve: { (cpu, mem) in return mem.byte16At(UInt16(mem.byteAt(cpu.PC + 1)) + cpu.Y16) }
+    resolve: { (cpu, mem) in return .Address(UInt16(mem.byteAt(cpu.PC + 1)) + cpu.Y16) }
 )
 
 let AddressingModeAbsoluteX = AddressingMode(
     name: "AddressingModeAbsoluteX",
     instructionSize: 3,
-    resolve: { (cpu, mem) in return mem.byte16At(mem.wordAt(cpu.PC + 1) + cpu.X16) }
+    resolve: { (cpu, mem) in return .Address(mem.wordAt(cpu.PC + 1) + cpu.X16) }
 )
 
 let AddressingModeAbsoluteY = AddressingMode(
     name: "AddressingModeAbsoluteY",
     instructionSize: 3,
-    resolve: { (cpu, mem) in return mem.byte16At(mem.wordAt(cpu.PC + 1) + cpu.Y16) }
+    resolve: { (cpu, mem) in return .Address(mem.wordAt(cpu.PC + 1) + cpu.Y16) }
 )
 
 let AddressingModeIndexedX = AddressingMode(
@@ -74,7 +74,7 @@ let AddressingModeIndexedX = AddressingMode(
         (cpu, mem) in
         let value   = mem.wordAt(cpu.PC + 1)
         let address = mem.wordAt(value + cpu.X16)
-        return mem.byte16At(address)
+        return .Address(address)
     }
 )
 
@@ -85,14 +85,14 @@ let AddressingModeIndexedY = AddressingMode(
         (cpu, mem) in
         let value   = mem.wordAt(cpu.PC + 1)
         let address = mem.wordAt(value) + cpu.Y16
-        return mem.byte16At(address)
+        return .Address(address)
     }
 )
 
 let AddressingModeIndirect = AddressingMode(
     name: "AddressingModeIndirect",
     instructionSize: 3,
-    resolve: { (cpu, mem) in return mem.wordAt(mem.wordAt(cpu.PC + 1)) }
+    resolve: { (cpu, mem) in return .Address(mem.wordAt(cpu.PC + 1)) }
 )
 
 let AddressingModeRelative = AddressingMode(
@@ -106,6 +106,6 @@ let AddressingModeRelative = AddressingMode(
         let positive = sign != 0x80
         let offset   = positive ? Int(rest) : -(Int(rest ^ 0xFF) + 1)
         let address  = UInt16(Int(cpu.PC + 2) + offset)
-        return address
+        return .Address(address)
     }
 )

@@ -6,6 +6,13 @@
 //  Copyright © 2015 Antonio Malara. All rights reserved.
 //
 
+func getValue(v: OpcodeValue, _ m: Memory) -> UInt16 {
+    switch v {
+    case .Address(let a):   return m.wordAt(a)
+    case .Immediate(let i): return UInt16(i)
+    case .Implied:          return 0
+    }
+}
 
 extension CpuState.StatusRegister {
     func setSZ(value : Int8) -> CpuState.StatusRegister {
@@ -20,10 +27,10 @@ extension CpuState.StatusRegister {
         return temp
     }
     
-    func compare(v: OpcodeValue, register: UInt8) -> CpuState.StatusRegister {
+    func compare(v: UInt16, register: UInt8) -> CpuState.StatusRegister {
         var temp          = self
         let registerValue = Int8(bitPattern: register)
-        let byteValue     = Int8(bitPattern: UInt8(v & 0xFF))
+        let byteValue     = Int8(bitPattern: UInt8(truncatingBitPattern:v))
         
         temp.remove([.Z, .S, .C])
         
@@ -70,11 +77,16 @@ func BIT(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BMI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func BNE(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    if c.SR.isSupersetOf(.Z) {
+    switch v {
+    case .Address(let a):
+        if c.SR.isSupersetOf(.Z) {
+            return c
+        }
+        else {
+            return c.change(PC: a)
+        }
+    default:
         return c
-    }
-    else {
-        return c.change(PC: v)
     }
 }
 
@@ -88,7 +100,7 @@ func CLI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CLV(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func CMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(SR: c.SR.compare(v, register: c.A))
+    return c.change(SR: c.SR.compare(getValue(v, m), register: c.A))
 }
 
 func CPX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
@@ -111,21 +123,28 @@ func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func JMP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func JSR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let state = c.pushStackWord(c.PC, into: m)
-    return state.change(PC: v)
+    switch v {
+    case .Address(let a):
+        let state = c.pushStackWord(c.PC, into: m)
+        return state.change(PC: a)
+    default:
+        return c
+    }
 }
 
 func LDA(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = UInt8(truncatingBitPattern: getValue(value, m))
     return c.change(
-        A:  UInt8(value),
-        SR: c.SR.setSZ(Int8(bitPattern:UInt8(value)))
+        A:  v,
+        SR: c.SR.setSZ(Int8(bitPattern:v))
     )
 }
 
 func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = UInt8(truncatingBitPattern: getValue(value, m))
     return c.change(
-        X:  UInt8(value),
-        SR: c.SR.setSZ(Int8(bitPattern:UInt8(value)))
+        X:  v,
+        SR: c.SR.setSZ(Int8(bitPattern:v))
     )
 }
 

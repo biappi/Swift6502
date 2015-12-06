@@ -29,7 +29,12 @@ extension Memory {
     }
 }
 
-typealias OpcodeValue            = UInt16
+enum OpcodeValue {
+    case Address(UInt16)
+    case Immediate(UInt8)
+    case Implied
+}
+
 typealias OpcodeImplementation   = (OpcodeValue, CpuState, Memory) -> CpuState
 typealias AddressingModeResolver = (CpuState, Memory) -> OpcodeValue
 
@@ -107,7 +112,7 @@ func CpuStep(cpuState: CpuState, memory: Memory) -> CpuState {
     let value    = opcode.1.resolve(cpuState, memory)
     let newPC    = cpuState.PC + opcode.1.instructionSize
     let newState = cpuState.change(PC: newPC)
-    let endState = opcode.2(value, c: newState, m: memory)
+    let endState = opcode.2(value, newState, memory)
     
     return endState
 }
