@@ -183,7 +183,14 @@ func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func LDY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func LDY(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = UInt8(truncatingBitPattern: getValue(value, m))
+    return c.change(
+        Y:  v,
+        SR: c.SR.setSZ(Int8(bitPattern:v))
+    )
+}
+
 func LSR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func NOP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
