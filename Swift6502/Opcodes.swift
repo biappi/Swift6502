@@ -230,7 +230,13 @@ func STA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 
 func STX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func STY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func TAX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func TAX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.change(
+        X: c.A,
+        SR: c.SR.setSZ(Int8(bitPattern:c.A))
+    )
+}
 
 func TAY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
