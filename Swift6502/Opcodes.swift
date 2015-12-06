@@ -134,7 +134,13 @@ func EOR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func INC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func INX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func JMP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func JMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    switch v {
+    case .Address(let a): return c.change(PC: a)
+    default:              return c
+    }
+}
 
 func JSR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     switch v {
