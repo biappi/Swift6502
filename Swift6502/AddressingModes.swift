@@ -100,12 +100,8 @@ let AddressingModeRelative = AddressingMode(
     instructionSize: 2,
     resolve: {
         (cpu, mem) in
-        let value    = mem.byteAt(cpu.PC + 1)
-        let sign     = (value &  0x80)
-        let rest     = (value & ~0x80)
-        let positive = sign != 0x80
-        let offset   = positive ? Int(rest) : -(Int(rest ^ 0xFF) + 1)
-        let address  = UInt16(Int(cpu.PC + 2) + offset)
-        return .Address(address)
+        let offset = Int(Int8(bitPattern:mem.byteAt(cpu.PC + 1)))
+        let address = Int(cpu.PC) + offset + 2
+        return .Address(UInt16(truncatingBitPattern:address))
     }
 )
