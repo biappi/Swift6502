@@ -236,7 +236,10 @@ func PHA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.pushStackByte(c.A, into: m)
 }
 
-func PHP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func PHP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.pushStackByte(c.SR.rawValue, into: m)
+}
+
 func PLA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func PLP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func ROL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
