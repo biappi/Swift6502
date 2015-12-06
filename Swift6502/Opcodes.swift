@@ -141,7 +141,14 @@ func DEY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func EOR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func INC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func INX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = c.Y &+ 1
+    return c.change(
+        Y:  v,
+        SR: c.SR.setSZ(Int8(bitPattern:v))
+    )
+}
 
 func JMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     switch v {
@@ -179,7 +186,15 @@ func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 func LDY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func LSR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func NOP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func ORA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func ORA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let f = c.A | UInt8(truncatingBitPattern: getValue(v, m))
+    return c.change(
+        A: f,
+        SR: c.SR.setSZ(Int8(bitPattern:f))
+    )
+}
+
 func PHA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func PHP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func PLA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
