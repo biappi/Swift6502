@@ -68,7 +68,15 @@ extension CpuState {
 }
 
 func ADC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func AND(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func AND(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let f = c.A & UInt8(truncatingBitPattern: getValue(v, m))
+    return c.change(
+        A: f,
+        SR: c.SR.setSZ(Int8(bitPattern:f))
+    )
+}
+
 func ASL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BCC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BCS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
