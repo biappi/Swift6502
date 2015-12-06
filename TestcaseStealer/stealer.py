@@ -2,6 +2,7 @@ from py65.tests.devices.test_mpu6502 import MPUTests, Common6502Tests
 from py65.devices.mpu6502 import MPU
 
 import json
+import itertools
 
 class Memory(object):
     def __init__(self):
@@ -16,6 +17,7 @@ class Memory(object):
             for i, v in zip(indexes, value):
                 self.__setitem__(i, v)
         else:
+            if value > 0xff: value = 0xff
             self.mem[item] = value
 
 class CPUStepped(Exception): pass
@@ -37,6 +39,7 @@ class CPU(object):
         self.memory = Memory()
         self.regs   = {
             'pc': 0,
+            'sp': 0xff,
             'a' : 0,
             'x' : 0,
             'y' : 0,
@@ -96,7 +99,7 @@ def get_postconditions(pre):
         'mem': cpu.memory.mem,
     }
 
-if __name__ == '__main__':
+def steal():
     disabled  = (
         'test_adc_bcd_off_absolute_carry_clear_in_accumulator_zeroes',
         'test_decorated_addressing_modes_are_valid',
@@ -110,5 +113,66 @@ if __name__ == '__main__':
     postconds = [get_postconditions(i) for i in preconds]
     joined    = [{'pre': pre, 'post': post} for pre, post in zip(preconds, postconds)]
     testcases = dict(zip(testnames, joined))
+    return testcases
 
-    print json.dumps(testcases, sort_keys=True, indent=4)
+def jsonprinter(cases):
+    print json.dumps(cases, sort_keys=True, indent=4)
+
+def s_state(d):
+    print '        TestState(CpuState(A:0x%02x, X:0x%02x, Y:0x%02x, SP:0x%02x, PC:0x%04x, SR:SR(0x%02x)),' % (
+        d['a'],
+        d['x'],
+        d['y'],
+        d['sp'],
+        d['pc'],
+        d['p'],
+    )
+
+def s_mem(d, c=False):
+    c = ',' if c else ''
+    array = ', '.join("0x%04x:0x%02x" % i for i in d.iteritems())
+    print '                  [%s])%s' % (array, c)
+
+def swiftprinter(cases):
+    print """func SR(i: UInt8) -> CpuState.StatusRegister {
+    return CpuState.StatusRegister(rawValue: i)
+}
+
+struct TestState {
+    let cpu: CpuState
+    let mem: [UInt16:UInt8]
+    
+    init (_ s : CpuState, _ m : [UInt16:UInt8]) {
+        cpu = s
+        mem = m
+    }
+}
+
+struct TestCase {
+    let name: String
+    let pre:  TestState
+    let post: TestState
+    
+    init (_ n: String, _ pr: TestState, _ po: TestState) {
+        name = n
+        pre  = pr
+        post = po
+    }
+}
+"""
+
+    print "let tests_6502 : [TestCase] = ["
+    for name, case in cases.iteritems():
+        print '    TestCase('
+        print '        "%s",' % name
+        s_state(case['pre']['regs'])
+        s_mem(case['pre']['mem'], True)
+        s_state(case['post']['regs'])
+        s_mem(case['post']['mem'])
+        print '    ),'
+    print ']'
+
+if __name__ == '__main__':
+    cases = steal()
+    cases = dict(list(cases.iteritems())[:10])
+    swiftprinter(cases)
