@@ -157,14 +157,16 @@ var cpuState = CpuState()
 
 cpuState.PC = c64memory.wordAt(0xfffc)
 
-for correctState in c64boottrace {
+for (i, correctState) in c64boottrace.enumerate() {
     let correct = cpuState == correctState
     
     if correct {
         print ("√\n")
     }
     else {
+        print("Expected:")
         print(correctState.description())
+        print("Got:")
         print(cpuState.description())
         print("")
 
@@ -172,10 +174,12 @@ for correctState in c64boottrace {
         break
     }
     
-    let code     = Int(c64memory.byteAt(cpuState.PC))
+    let pc       = cpuState.PC
+    let code     = Int(c64memory.byteAt(pc))
     let opcode   = Opcodes[code]
+    let pcString = String(format: "%2d [%04x]", i, pc)
     
-    print(String(format:"Code %02x, \(opcode.0) \(opcode.1.name)", code))
+    print(String(format:"\(pcString) Code %02x, \(opcode.0) \(opcode.1.name)", code))
 
     cpuState = CpuStep(cpuState, memory: c64memory)
 }
