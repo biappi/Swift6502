@@ -259,7 +259,11 @@ func TXA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func TXS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func TXS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.change(
+        SP: c.X
+    )
+}
 
 func TYA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
