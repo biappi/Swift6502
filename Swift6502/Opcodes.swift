@@ -50,6 +50,22 @@ extension CpuState.StatusRegister {
 }
 
 extension CpuState {
+    func pushStackByte(v: UInt8, into memory: Memory) -> CpuState {
+        memory.changeByteAt(self.SP16, to: v)
+        return self.change(
+            SP: self.SP - 1
+        )
+    }
+    
+    func popStackByte(memory: Memory) -> (UInt8, CpuState) {
+        let cpuState = self.change(SP: self.SP + 1)
+        
+        return (
+            memory.byteAt(cpuState.SP16),
+            cpuState
+        )
+    }
+    
     func pushStackWord(v: UInt16, into memory: Memory) -> CpuState {
         memory.changeWordAt(self.SP16, to: v)
         return self.change(
@@ -216,7 +232,10 @@ func ORA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func PHA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func PHA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.pushStackByte(c.A, into: m)
+}
+
 func PHP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func PLA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func PLP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
