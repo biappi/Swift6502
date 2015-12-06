@@ -140,7 +140,14 @@ func DEX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 func DEY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func EOR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func INC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func INX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func INX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = c.X &+ 1
+    return c.change(
+        X:  v,
+        SR: c.SR.setSZ(Int8(bitPattern:v))
+    )
+}
 
 func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.Y &+ 1
