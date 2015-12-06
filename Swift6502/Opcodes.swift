@@ -245,7 +245,12 @@ func TAY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func TSX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func TSX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.change(
+        X: c.SP,
+        SR: c.SR.setSZ(Int8(bitPattern:c.SP))
+    )
+}
 
 func TXA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
