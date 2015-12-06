@@ -32,7 +32,7 @@ class C64MemoryLayout : Memory {
             default:
                 if address == 0xffff {
                     // swift bug, http://www.openradar.appspot.com/23101392
-                    return kernal[0xffff - 0xe0000]
+                    return kernal[0xffff - 0xe000]
                 }
                 
                 return ram[Int(address)]
