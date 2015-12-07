@@ -6,10 +6,10 @@
 //  Copyright © 2015 Antonio Malara. All rights reserved.
 //
 
-func getValue(v: OpcodeValue, _ m: Memory) -> UInt16 {
+func getValue(v: OpcodeValue, _ m: Memory) -> UInt8 {
     switch v {
-    case .Address(let a):   return m.wordAt(a)
-    case .Immediate(let i): return UInt16(i)
+    case .Address(let a):   return m.byteAt(a)
+    case .Immediate(let i): return i
     case .Implied:          return 0
     }
 }
@@ -84,7 +84,7 @@ extension CpuState {
 func ADC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func AND(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let f = c.A & UInt8(truncatingBitPattern: getValue(v, m))
+    let f = c.A & getValue(v, m)
     return c.change(
         A: f,
         SR: c.SR.setSZ(f)
@@ -110,7 +110,7 @@ func BEQ(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func BIT(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let v = UInt8(truncatingBitPattern:getValue(v, m))
+    let v = getValue(v, m)
     
     var sr = c.SR
     sr.remove([.Z, .S, .V])
@@ -220,7 +220,7 @@ func CLV(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 
 
 func CMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(SR: c.SR.compare(getValue(v, m), register: c.A))
+    return c.change(SR: c.SR.compare(UInt16(getValue(v, m)), register: c.A))
 }
 
 func CPX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
@@ -244,7 +244,7 @@ func DEY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func EOR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let v = UInt8(truncatingBitPattern: getValue(v, m))
+    let v = getValue(v, m)
     let x = c.A ^ v
     
     return c.change(
@@ -289,7 +289,7 @@ func JSR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func LDA(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let v = UInt8(truncatingBitPattern: getValue(value, m))
+    let v = getValue(value, m)
     return c.change(
         A:  v,
         SR: c.SR.setSZ(v)
@@ -297,7 +297,7 @@ func LDA(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let v = UInt8(truncatingBitPattern: getValue(value, m))
+    let v = getValue(value, m)
     return c.change(
         X:  v,
         SR: c.SR.setSZ(v)
@@ -305,7 +305,7 @@ func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func LDY(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let v = UInt8(truncatingBitPattern: getValue(value, m))
+    let v = getValue(value, m)
     return c.change(
         Y:  v,
         SR: c.SR.setSZ(v)
@@ -316,7 +316,7 @@ func LSR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func NOP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func ORA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let f = c.A | UInt8(truncatingBitPattern: getValue(v, m))
+    let f = c.A | getValue(v, m)
     return c.change(
         A: f,
         SR: c.SR.setSZ(f)
