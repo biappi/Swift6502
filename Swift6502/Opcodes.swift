@@ -92,7 +92,21 @@ func AND(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func ASL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func BCC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func BCC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    switch v {
+    case .Address(let a):
+        if c.SR.isSupersetOf(.C) {
+            return c
+        }
+        else {
+            return c.change(PC: a)
+        }
+    default:
+        return c
+    }
+}
+
 func BCS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func BEQ(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
