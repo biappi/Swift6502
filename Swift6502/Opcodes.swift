@@ -428,7 +428,11 @@ func RTS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func SBC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func SEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func SEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.change(SR:c.SR.union(.C))
+}
+
 func SED(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func SEI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
