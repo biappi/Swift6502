@@ -14,6 +14,14 @@ func getValue(v: OpcodeValue, _ m: Memory) -> UInt8 {
     }
 }
 
+func setValue(v: OpcodeValue, _ n: UInt8, _ c: CpuState, _ m: Memory) -> CpuState {
+    switch v {
+    case .Address(let a): m.changeByteAt(a, to: n); return c
+    case .Accumulator:    return c.change(A: n)
+    case .Implied:        return c
+    }
+}
+
 extension CpuState.StatusRegister {
     func setSZ(value : UInt8) -> CpuState.StatusRegister {
         var temp = self
@@ -344,7 +352,19 @@ func LDY(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func LSR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func LSR(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = getValue(value, m)
+    let r = v >> 1
+    
+    var sr = c.SR
+    sr.remove([.C])
+    if (v & 0x1) != 0 {
+        sr.insert(.C)
+    }
+    
+    return setValue(value, r, c, m).change(SR:sr.setSZ(r))
+}
+
 func NOP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func ORA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
