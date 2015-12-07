@@ -132,7 +132,13 @@ func BPL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BRK(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BVC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func BVS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func CLC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func CLC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    var x = c.SR
+    x.remove(.C)
+    return c.change(SR: x)
+}
+
 func CLD(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CLI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CLV(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
