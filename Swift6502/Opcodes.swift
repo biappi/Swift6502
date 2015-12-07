@@ -65,7 +65,7 @@ extension CpuState {
     }
     
     func pushStackWord(v: UInt16, into memory: Memory) -> CpuState {
-        memory.changeWordAt(self.SP16, to: v)
+        memory.changeWordAt(self.SP16 - 1, to: v)
         return self.change(
             SP: self.SP - 2
         )
@@ -281,7 +281,7 @@ func JMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 func JSR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     switch v {
     case .Address(let a):
-        let state = c.pushStackWord(c.PC, into: m)
+        let state = c.pushStackWord(c.PC - 1, into: m)
         return state.change(PC: a)
     default:
         return c
