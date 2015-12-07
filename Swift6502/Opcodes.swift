@@ -109,7 +109,18 @@ func BEQ(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     }
 }
 
-func BIT(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func BIT(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = UInt8(truncatingBitPattern:getValue(v, m))
+    
+    var sr = c.SR
+    sr.remove([.Z, .S, .V])
+    
+    if (c.A & v)  == 0 { sr.insert(.Z) }
+    if (v & 0x80) != 0 { sr.insert(.S) }
+    if (v & 0x40) != 0 { sr.insert(.V) }
+    
+    return c.change(SR: sr)
+}
 
 func BMI(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     switch v {
