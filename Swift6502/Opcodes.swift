@@ -8,9 +8,9 @@
 
 func getValue(v: OpcodeValue, _ m: Memory) -> UInt8 {
     switch v {
-    case .Address(let a):   return m.byteAt(a)
-    case .Immediate(let i): return i
-    case .Implied:          return 0
+    case .Address(let a):     return m.byteAt(a)
+    case .Accumulator(let i): return i
+    case .Implied:            return 0
     }
 }
 

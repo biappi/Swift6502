@@ -31,7 +31,7 @@ extension Memory {
 
 enum OpcodeValue {
     case Address(UInt16)
-    case Immediate(UInt8)
+    case Accumulator(UInt8)
     case Implied
 }
 
