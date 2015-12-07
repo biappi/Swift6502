@@ -8,6 +8,18 @@
 
 import Foundation
 
+class ArrayMemory : Memory {
+    var ram : [UInt8] = [UInt8].init(count: 0x10000, repeatedValue: 0)
+    
+    func byteAt(address: Address) -> UInt8 {
+            return ram[Int(address)]
+    }
+    
+    func changeByteAt(address: Address, to: UInt8) {
+        ram[Int(address)] = to
+    }
+}
+
 class C64MemoryLayout : Memory {
     let kernal : [UInt8]
     let basic  : [UInt8]
@@ -50,10 +62,7 @@ var success = 0
 for test in tests_6502 {
     var ok = true
     
-    let mem = C64MemoryLayout(
-        kernal: kernal,
-        basic:  basic
-    )
+    let mem = ArrayMemory()
     
     for (addr, value) in test.pre.mem {
         mem.changeByteAt(addr, to: value)
