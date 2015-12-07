@@ -409,7 +409,17 @@ func ROL(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return setValue(v, result, c, m).change(SR: sr.setSZ(result))
 }
 
-func ROR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func ROR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let value  = getValue(v, m)
+    let carry  = c.SR.contains(.C) ? UInt8(0x80) : UInt8(0)
+    let result = (value >> 1) | carry
+    
+    var sr     = c.SR
+    if (value & 0x01) != 0 { sr.insert(.C) } else { sr.remove(.C) }
+    
+    return setValue(v, result, c, m).change(SR: sr.setSZ(result))
+}
+
 func RTI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func RTS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
