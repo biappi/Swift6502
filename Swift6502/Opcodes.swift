@@ -433,7 +433,9 @@ func SEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(SR:c.SR.union(.C))
 }
 
-func SED(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func SED(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.change(SR:c.SR.union(.D))
+}
 
 func SEI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
