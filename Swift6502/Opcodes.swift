@@ -383,7 +383,14 @@ func PHP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.pushStackByte(c.SR.rawValue, into: m)
 }
 
-func PLA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func PLA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let (v, cpu) = c.popStackByte(m)
+    return cpu.change(
+        A: v,
+        SR: c.SR.setSZ(v)
+    )
+}
+
 func PLP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func ROL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func ROR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
