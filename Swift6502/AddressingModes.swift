@@ -28,7 +28,7 @@ let AddressingModeImmediate = AddressingMode(
 let AddressingModeZeroPage = AddressingMode(
     name: "AddressingModeZeroPage",
     instructionSize: 2,
-    resolve: { (cpu, mem) in return .Address(cpu.PC + 1) }
+    resolve: { (cpu, mem) in return .Address(UInt16(mem.byteAt(cpu.PC + 1))) }
 )
 
 let AddressingModeAccumulator = AddressingMode(
