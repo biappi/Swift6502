@@ -391,7 +391,13 @@ func PLA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func PLP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func PLP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let (v, cpu) = c.popStackByte(m)
+    return cpu.change(
+        SR: CpuState.StatusRegister(rawValue: v)
+    )
+}
+
 func ROL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func ROR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func RTI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
