@@ -234,7 +234,16 @@ func DEY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func EOR(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func EOR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = UInt8(truncatingBitPattern: getValue(v, m))
+    let x = c.A ^ v
+    
+    return c.change(
+        A: x,
+        SR: c.SR.setSZ(Int8(bitPattern:x))
+    )
+}
+
 func INC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func INX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
