@@ -112,7 +112,20 @@ func BEQ(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func BIT(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func BMI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func BMI(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    switch v {
+    case .Address(let a):
+        if c.SR.isSupersetOf(.S) {
+            return c.change(PC: a)
+        }
+        else {
+            return c
+        }
+    default:
+        return c
+    }
+}
 
 func BNE(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     switch v {
