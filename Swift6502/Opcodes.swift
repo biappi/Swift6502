@@ -151,7 +151,12 @@ func CLI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(SR: x)
 }
 
-func CLV(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func CLV(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    var x = c.SR
+    x.remove(.V)
+    return c.change(SR: x)
+}
+
 
 func CMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(SR: c.SR.compare(getValue(v, m), register: c.A))
