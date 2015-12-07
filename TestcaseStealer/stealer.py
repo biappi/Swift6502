@@ -61,7 +61,10 @@ class CPU(object):
         x.cpu = self
         raise x
 
-class TestHarness(Common6502Tests):
+class TestHarness(MPUTests):
+    def __init__  (self, *args, **kwargs): pass
+    def assertTrue(self, *args, **kwargs): pass
+
     def _make_mpu(self):
         return CPU()
 
@@ -82,7 +85,11 @@ class ChangeTrackingMemory(object):
             self.mem.update(initial)
 
     def __getitem__(self, x):
-        return self.mem[x]
+        try:
+            return self.mem[x]
+        except:
+            self.mem[x] = 0
+            return self.mem[x]
 
     def __setitem__(self, x, y):
         self.mem[x] = y
@@ -104,6 +111,7 @@ def steal():
         'test_adc_bcd_off_absolute_carry_clear_in_accumulator_zeroes',
         'test_decorated_addressing_modes_are_valid',
         'test_reset_sets_registers_to_initial_states',
+        'test_repr',
     )
 
     harness   = TestHarness()
@@ -127,7 +135,7 @@ def s_state(d):
         d['pc'],
         d['p'],
     )
-
+#
 def s_mem(d, c=False):
     c = ',' if c else ''
     array = ', '.join("0x%04x:0x%02x" % i for i in d.iteritems())
@@ -174,5 +182,5 @@ struct TestCase {
 
 if __name__ == '__main__':
     cases = steal()
-    cases = dict(list(cases.iteritems())[:10])
+    #cases = dict(list(cases.iteritems())[:10])
     swiftprinter(cases)
