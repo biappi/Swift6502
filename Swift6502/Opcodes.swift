@@ -156,7 +156,21 @@ func BPL(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func BRK(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func BVC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+
+func BVC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    switch v {
+    case .Address(let a):
+        if c.SR.isSupersetOf(.V) {
+            return c
+        }
+        else {
+            return c.change(PC: a)
+        }
+    default:
+        return c
+    }
+}
+
 func BVS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func CLC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
