@@ -171,7 +171,19 @@ func BVC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     }
 }
 
-func BVS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func BVS(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    switch v {
+    case .Address(let a):
+        if c.SR.isSupersetOf(.V) {
+            return c.change(PC: a)
+        }
+        else {
+            return c
+        }
+    default:
+        return c
+    }
+}
 
 func CLC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     var x = c.SR
