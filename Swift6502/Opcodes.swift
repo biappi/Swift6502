@@ -139,7 +139,12 @@ func CLC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(SR: x)
 }
 
-func CLD(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func CLD(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    var x = c.SR
+    x.remove(.D)
+    return c.change(SR: x)
+}
+
 func CLI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 func CLV(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
