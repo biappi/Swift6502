@@ -15,14 +15,12 @@ func getValue(v: OpcodeValue, _ m: Memory) -> UInt16 {
 }
 
 extension CpuState.StatusRegister {
-    func setSZ(value : Int8) -> CpuState.StatusRegister {
+    func setSZ(value : UInt8) -> CpuState.StatusRegister {
         var temp = self
+        temp.remove([.Z, .S])
         
-        if   value == 0 { temp.insert(.Z) }
-        else            { temp.remove(.Z) }
-        
-        if   value  < 0 { temp.insert(.S) }
-        else            { temp.remove(.S) }
+        if value == 0 { temp.insert(.Z) }
+        if (value & 0x80) != 0 { temp.insert(.S) }
         
         return temp
     }
@@ -89,7 +87,7 @@ func AND(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let f = c.A & UInt8(truncatingBitPattern: getValue(v, m))
     return c.change(
         A: f,
-        SR: c.SR.setSZ(Int8(bitPattern:f))
+        SR: c.SR.setSZ(f)
     )
 }
 
@@ -222,7 +220,7 @@ func DEX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.X &- 1
     return c.change(
         X:  v,
-        SR: c.SR.setSZ(Int8(bitPattern:v))
+        SR: c.SR.setSZ(v)
     )
 }
 
@@ -230,7 +228,7 @@ func DEY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.Y &- 1
     return c.change(
         Y:  v,
-        SR: c.SR.setSZ(Int8(bitPattern:v))
+        SR: c.SR.setSZ(v)
     )
 }
 
@@ -240,7 +238,7 @@ func EOR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     
     return c.change(
         A: x,
-        SR: c.SR.setSZ(Int8(bitPattern:x))
+        SR: c.SR.setSZ(x)
     )
 }
 
@@ -250,7 +248,7 @@ func INX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.X &+ 1
     return c.change(
         X:  v,
-        SR: c.SR.setSZ(Int8(bitPattern:v))
+        SR: c.SR.setSZ(v)
     )
 }
 
@@ -258,7 +256,7 @@ func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.Y &+ 1
     return c.change(
         Y:  v,
-        SR: c.SR.setSZ(Int8(bitPattern:v))
+        SR: c.SR.setSZ(v)
     )
 }
 
@@ -283,7 +281,7 @@ func LDA(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = UInt8(truncatingBitPattern: getValue(value, m))
     return c.change(
         A:  v,
-        SR: c.SR.setSZ(Int8(bitPattern:v))
+        SR: c.SR.setSZ(v)
     )
 }
 
@@ -291,7 +289,7 @@ func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = UInt8(truncatingBitPattern: getValue(value, m))
     return c.change(
         X:  v,
-        SR: c.SR.setSZ(Int8(bitPattern:v))
+        SR: c.SR.setSZ(v)
     )
 }
 
@@ -299,7 +297,7 @@ func LDY(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = UInt8(truncatingBitPattern: getValue(value, m))
     return c.change(
         Y:  v,
-        SR: c.SR.setSZ(Int8(bitPattern:v))
+        SR: c.SR.setSZ(v)
     )
 }
 
@@ -310,7 +308,7 @@ func ORA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let f = c.A | UInt8(truncatingBitPattern: getValue(v, m))
     return c.change(
         A: f,
-        SR: c.SR.setSZ(Int8(bitPattern:f))
+        SR: c.SR.setSZ(f)
     )
 }
 
@@ -372,28 +370,28 @@ func STY(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 func TAX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
         X: c.A,
-        SR: c.SR.setSZ(Int8(bitPattern:c.A))
+        SR: c.SR.setSZ(c.A)
     )
 }
 
 func TAY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
         Y: c.A,
-        SR: c.SR.setSZ(Int8(bitPattern:c.A))
+        SR: c.SR.setSZ(c.A)
     )
 }
 
 func TSX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
         X: c.SP,
-        SR: c.SR.setSZ(Int8(bitPattern:c.SP))
+        SR: c.SR.setSZ(c.SP)
     )
 }
 
 func TXA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
         A: c.X,
-        SR: c.SR.setSZ(Int8(bitPattern:c.X))
+        SR: c.SR.setSZ(c.X)
     )
 }
 
@@ -406,7 +404,7 @@ func TXS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 func TYA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(
         A: c.Y,
-        SR: c.SR.setSZ(Int8(bitPattern:c.Y))
+        SR: c.SR.setSZ(c.Y)
     )
 }
 
