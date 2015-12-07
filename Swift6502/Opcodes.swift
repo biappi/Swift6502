@@ -107,7 +107,19 @@ func BCC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     }
 }
 
-func BCS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func BCS(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    switch v {
+    case .Address(let a):
+        if c.SR.isSupersetOf(.C) {
+            return c.change(PC: a)
+        }
+        else {
+            return c
+        }
+    default:
+        return c
+    }
+}
 
 func BEQ(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     switch v {
