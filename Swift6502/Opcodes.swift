@@ -249,8 +249,14 @@ func CMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(SR: c.SR.compare(UInt16(getValue(v, m)), register: c.A))
 }
 
-func CPX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
-func CPY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func CPX(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.change(SR: c.SR.compare(UInt16(getValue(v, m)), register: c.X))
+}
+
+func CPY(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c.change(SR: c.SR.compare(UInt16(getValue(v, m)), register: c.Y))
+}
+
 func DEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func DEX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
