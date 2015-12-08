@@ -385,7 +385,10 @@ func EOR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func INC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func INC(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = (getValue(value, m) &+ 1)
+    return setValue(value, v, c, m).change(SR: c.SR.setSZ(v))
+}
 
 func INX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.X &+ 1
