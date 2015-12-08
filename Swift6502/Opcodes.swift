@@ -169,7 +169,26 @@ func AND(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     )
 }
 
-func ASL(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func ASL(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = getValue(value, m)
+    let r = v << 1
+    
+    var sr = c.SR
+    sr.remove([.C, .Z, .S])
+    
+    if r == 0 {
+        sr.insert(.Z)
+    }
+    else if (r & 0x80) != 0 {
+        sr.insert(.S)
+    }
+    
+    if (v & 0x80) != 0 {
+        sr.insert(.C)
+    }
+    
+    return setValue(value, r, c, m).change(SR: sr)
+}
 
 func BCC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     switch v {
