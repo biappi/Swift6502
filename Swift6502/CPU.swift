@@ -49,7 +49,7 @@ struct CpuState : Equatable {
         let rawValue : UInt8
         
         init(rawValue: UInt8) {
-            self.rawValue = rawValue & 0b11011111
+            self.rawValue = rawValue | 0b00100000
         }
         
         static let None = StatusRegister(rawValue: 0b00000000)

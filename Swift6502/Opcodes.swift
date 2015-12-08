@@ -73,18 +73,17 @@ extension CpuState {
     }
     
     func pushStackWord(v: UInt16, into memory: Memory) -> CpuState {
-        memory.changeWordAt(self.SP16 - 1, to: v)
-        return self.change(
-            SP: self.SP - 2
-        )
+        let cpu1 = self.pushStackByte(UInt8(v >>  8), into: memory)
+        let cpu2 = cpu1.pushStackByte(UInt8(v & 0xf), into: memory)
+        return cpu2
     }
 
     func popStackWord(memory: Memory) -> (UInt16, CpuState) {
-        let cpuState = self.change(SP: self.SP + 2)
-
+        let (lo, cpu1) = self.popStackByte(memory)
+        let (hi, cpu2) = cpu1.popStackByte(memory)
         return (
-            memory.wordAt(cpuState.SP16 - 1),
-            cpuState
+            (UInt16(hi) << 8) + UInt16(lo),
+            cpu2
         )
     }
 }
@@ -287,7 +286,14 @@ func BPL(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     }
 }
 
-func BRK(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func BRK(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let cpu1 = c.pushStackWord(c.PC + 1, into: m)
+    var sr = cpu1.SR
+    sr.insert(.B)
+    let cpu2 = cpu1.pushStackByte(sr.rawValue, into: m)
+    sr.insert(.I)
+    return cpu2.change(PC: m.wordAt(0xfffe), SR: sr)
+}
 
 func BVC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     switch v {
