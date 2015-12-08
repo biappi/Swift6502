@@ -497,7 +497,75 @@ func RTS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return newState.change(PC: newPC)
 }
 
-func SBC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func SBC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v     = ~getValue(v, m)
+    let carry = c.SR.contains(.C) ? 1 : 0
+    let r16   = UInt16(v) +
+                UInt16(c.A) +
+                UInt16(carry)
+
+    if !c.SR.contains(.D) {
+        let r   = UInt8(truncatingBitPattern:r16)
+        
+        var sr  = c.SR
+        sr.remove([.Z, .C, .V, .S])
+        
+        if ((c.A ^ ~v) & (c.A ^ r) & 0x80) != 0 {
+            sr.insert(.V)
+        }
+        
+        if r16 > 0xff {
+            sr.insert(.C)
+        }
+        
+        if r  == 0x00 {
+            sr.insert(.Z)
+        }
+        else if (r & 0x80) != 0 {
+            sr.insert(.S)
+        }
+        
+        return c.change(
+            A: r,
+            SR: sr
+        )
+    }
+    else {
+        let nibble0 : UInt8 = (v & 0xf) + (c.A & 0xf) + UInt8(carry)
+        let adjust0 : UInt8 = nibble0 <= 0xf ? 10 : 0
+        let carry0  : UInt8 = nibble0 <= 0xf ?  0 : 1
+        
+        let nibble1 : UInt8 = ((v >> 4) & 0xf) + ((c.A >> 4) & 0xf) + carry0
+        let adjust1 : UInt8 = nibble1 <= 0xf ? 10 << 4 : 0
+        
+        let aluresult       = UInt8(truncatingBitPattern:r16)
+        let decimalresult   = (((nibble1 + adjust1) & 0xf) << 4) +
+            ((nibble0 + adjust0) & 0xf)
+        
+        var sr  = c.SR
+        sr.remove([.Z, .C, .V, .S])
+        
+        if ((c.A ^ ~v) & (c.A ^ aluresult) & 0x80) != 0 {
+            sr.insert(.V)
+        }
+        
+        if r16 > 0xff {
+            sr.insert(.C)
+        }
+        
+        if aluresult == 0x00 {
+            sr.insert(.Z)
+        }
+        else if (aluresult & 0x80) != 0 {
+            sr.insert(.S)
+        }
+        
+        return c.change(
+            A: decimalresult,
+            SR: sr
+        )
+    }
+}
 
 func SEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(SR:c.SR.union(.C))
