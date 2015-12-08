@@ -83,7 +83,7 @@ extension CpuState {
         let cpuState = self.change(SP: self.SP + 2)
 
         return (
-            memory.wordAt(cpuState.SP16),
+            memory.wordAt(cpuState.SP16 - 1),
             cpuState
         )
     }
@@ -515,7 +515,14 @@ func ROR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return setValue(v, result, c, m).change(SR: sr.setSZ(result))
 }
 
-func RTI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func RTI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let (SR, cpu1) = c.popStackByte(m)
+    let (PC, cpu2) = cpu1.popStackWord(m)
+    
+    var sr = CpuState.StatusRegister(rawValue:SR)
+    sr.insert(.B)
+    return cpu2.change(PC: PC, SR:sr)
+}
 
 func RTS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let (newPC, newState) = c.popStackWord(m)
