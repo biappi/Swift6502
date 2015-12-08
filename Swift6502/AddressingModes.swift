@@ -92,7 +92,7 @@ let AddressingModeIndexedY = AddressingMode(
 let AddressingModeIndirect = AddressingMode(
     name: "AddressingModeIndirect",
     instructionSize: 3,
-    resolve: { (cpu, mem) in return .Address(mem.wordAt(cpu.PC + 1)) }
+    resolve: { (cpu, mem) in return .Address(mem.wordAt(mem.wordAt(cpu.PC + 1))) }
 )
 
 let AddressingModeRelative = AddressingMode(
