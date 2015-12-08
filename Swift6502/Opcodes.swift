@@ -354,7 +354,10 @@ func CPY(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(SR: c.SR.compare(UInt16(getValue(v, m)), register: c.Y))
 }
 
-func DEC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func DEC(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    let v = (getValue(value, m) &- 1)
+    return setValue(value, v, c, m).change(SR: c.SR.setSZ(v))
+}
 
 func DEX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.X &- 1
