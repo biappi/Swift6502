@@ -532,7 +532,7 @@ func RTI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 
 func RTS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let (newPC, newState) = c.popStackWord(m)
-    return newState.change(PC: newPC)
+    return newState.change(PC: newPC &+ 1)
 }
 
 func SBC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
