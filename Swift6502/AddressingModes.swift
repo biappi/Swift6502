@@ -8,8 +8,10 @@
 
 
 extension Memory {
-    func byte16At(address: Address) -> UInt16 {
-        return UInt16(self.byteAt(address))
+    func wordAtZeroPageWrapping(zpAddress: UInt8) -> UInt16 {
+        let low = UInt16(byteAt(UInt16(zpAddress)))
+        let hi  = UInt16(byteAt(UInt16(zpAddress &+ 1)))
+        return hi << 8 + low
     }
 }
 
@@ -83,8 +85,8 @@ let AddressingModeIndexedY = AddressingMode(
     instructionSize: 2,
     resolve: {
         (cpu, mem) in
-        let value   = mem.wordAt(cpu.PC + 1)
-        let address = mem.wordAt(value) + cpu.Y16
+        let value   = mem.byteAt(cpu.PC + 1)
+        let address = mem.wordAtZeroPageWrapping(value) + cpu.Y16
         return .Address(address)
     }
 )
