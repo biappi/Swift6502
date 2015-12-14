@@ -48,13 +48,13 @@ let AddressingModeAbsolute = AddressingMode(
 let AddressingModeZeroPageX = AddressingMode(
     name: "AddressingModeZeroPageX",
     instructionSize: 2,
-    resolve: { (cpu, mem) in return .Address(UInt16(mem.byteAt(cpu.PC + 1)) + cpu.X16) }
+    resolve: { (cpu, mem) in return .Address(UInt16(mem.byteAt(cpu.PC + 1) &+ cpu.X)) }
 )
 
 let AddressingModeZeroPageY = AddressingMode(
     name: "AddressingModeZeroPageY",
     instructionSize: 2,
-    resolve: { (cpu, mem) in return .Address(UInt16(mem.byteAt(cpu.PC + 1)) + cpu.Y16) }
+    resolve: { (cpu, mem) in return .Address(UInt16(mem.byteAt(cpu.PC + 1) &+ cpu.Y)) }
 )
 
 let AddressingModeAbsoluteX = AddressingMode(
