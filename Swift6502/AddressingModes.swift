@@ -74,8 +74,8 @@ let AddressingModeIndexedX = AddressingMode(
     instructionSize: 2,
     resolve: {
         (cpu, mem) in
-        let value   = mem.wordAt(cpu.PC + 1)
-        let address = mem.wordAt(value + cpu.X16)
+        let value   = mem.byteAt(cpu.PC + 1)
+        let address = mem.wordAtZeroPageWrapping(value &+ cpu.X)
         return .Address(address)
     }
 )
