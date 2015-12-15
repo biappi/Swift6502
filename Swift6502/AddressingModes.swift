@@ -8,9 +8,14 @@
 
 
 extension Memory {
-    func wordAtZeroPageWrapping(zpAddress: UInt8) -> UInt16 {
-        let low = UInt16(byteAt(UInt16(zpAddress)))
-        let hi  = UInt16(byteAt(UInt16(zpAddress &+ 1)))
+    func wordAtPageWrapping(address: UInt16) -> UInt16 {
+        let wrappedHi  = (address & 0xff00    )
+        let wrappedLow = (address & 0x00ff + 1) & 0x00ff
+        let wrappedInc = wrappedHi + wrappedLow
+        
+        let low = UInt16(byteAt(UInt16(address)))
+        let hi  = UInt16(byteAt(UInt16(wrappedInc)))
+        
         return hi << 8 + low
     }
 }
@@ -75,7 +80,7 @@ let AddressingModeIndexedX = AddressingMode(
     resolve: {
         (cpu, mem) in
         let value   = mem.byteAt(cpu.PC + 1)
-        let address = mem.wordAtZeroPageWrapping(value &+ cpu.X)
+        let address = mem.wordAtPageWrapping(UInt16(value &+ cpu.X))
         return .Address(address)
     }
 )
@@ -85,8 +90,8 @@ let AddressingModeIndexedY = AddressingMode(
     instructionSize: 2,
     resolve: {
         (cpu, mem) in
-        let value   = mem.byteAt(cpu.PC + 1)
-        let address = mem.wordAtZeroPageWrapping(value) + cpu.Y16
+        let value   = UInt16(mem.byteAt(cpu.PC + 1))
+        let address = mem.wordAtPageWrapping(value) + cpu.Y16
         return .Address(address)
     }
 )
@@ -94,7 +99,7 @@ let AddressingModeIndexedY = AddressingMode(
 let AddressingModeIndirect = AddressingMode(
     name: "AddressingModeIndirect",
     instructionSize: 3,
-    resolve: { (cpu, mem) in return .Address(mem.wordAt(mem.wordAt(cpu.PC + 1))) }
+    resolve: { (cpu, mem) in return .Address(mem.wordAtPageWrapping(mem.wordAt(cpu.PC + 1))) }
 )
 
 let AddressingModeRelative = AddressingMode(
