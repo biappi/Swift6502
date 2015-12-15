@@ -574,11 +574,11 @@ func SBC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
         let carry0  : UInt8 = nibble0 <= 0xf ?  0 : 1
         
         let nibble1 : UInt8 = ((v >> 4) & 0xf) + ((c.A >> 4) & 0xf) + carry0
-        let adjust1 : UInt8 = nibble1 <= 0xf ? 10 << 4 : 0
+        let adjust1 : UInt8 = nibble1 <= 0xf ? 10 : 0
         
         let aluresult       = UInt8(truncatingBitPattern:r16)
         let decimalresult   = (((nibble1 + adjust1) & 0xf) << 4) +
-            ((nibble0 + adjust0) & 0xf)
+                               ((nibble0 + adjust0) & 0xf)
         
         var sr  = c.SR
         sr.remove([.Z, .C, .V, .S])
