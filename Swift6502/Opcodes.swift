@@ -114,6 +114,16 @@ extension CpuState {
     }
 }
 
+func store(what: UInt8, at: OpcodeValue, cpu: CpuState, mem: Memory) -> CpuState {
+    switch at {
+    case .Address(let a):
+        mem.changeByteAt(a, to: what)
+        return cpu
+    default:
+        return cpu
+    }
+}
+
 func ADC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v     = getValue(v, m)
     let carry = c.SR.contains(.C) ? 1 : 0
@@ -530,29 +540,15 @@ func SEI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func STA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a):
-        m.changeByteAt(a, to: c.A)
-        return c
-    default:
-        return c
-    }
+    return store(c.A, at: v, cpu: c, mem: m)
 }
 
 func STX(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a): m.changeByteAt(a, to: c.X)
-    default: return c
-    }
-    return c
+    return store(c.X, at: v, cpu: c, mem: m)
 }
 
 func STY(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a): m.changeByteAt(a, to: c.Y)
-    default: return c
-    }
-    return c
+    return store(c.Y, at: v, cpu: c, mem: m)
 }
 
 func TAX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
