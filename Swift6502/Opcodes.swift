@@ -87,9 +87,17 @@ extension CpuState {
         )
     }
     
-    func changeRegisterA(v : UInt8) -> CpuState { return self.change(A: v).setSZ(v) }
-    func changeRegisterX(v : UInt8) -> CpuState { return self.change(X: v).setSZ(v) }
-    func changeRegisterY(v : UInt8) -> CpuState { return self.change(Y: v).setSZ(v) }
+    func changeRegisterA(v : UInt8) -> CpuState {
+        return self.change(A: v).setSZ(v)
+    }
+    
+    func changeRegisterX(v : UInt8) -> CpuState {
+        return self.change(X: v).setSZ(v)
+    }
+    
+    func changeRegisterY(v : UInt8) -> CpuState {
+        return self.change(Y: v).setSZ(v)
+    }
 }
 
 func ADC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -443,7 +451,9 @@ func LSR(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return setValue(value, r, c, m).change(SR: sr).setSZ(r)
 }
 
-func NOP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func NOP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c
+}
 
 func ORA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let f = c.A | getValue(v, m)
@@ -585,9 +595,7 @@ func SED(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func SEI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(
-        SR: c.SR.union(.I)
-    )
+    return c.change(SR: c.SR.union(.I))
 }
 
 func STA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -640,4 +648,6 @@ func TYA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.changeRegisterA(c.Y)
 }
 
-func ill(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
+func ill(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
+    return c
+}
