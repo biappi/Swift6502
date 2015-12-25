@@ -22,36 +22,36 @@ func setValue(v: OpcodeValue, _ n: UInt8, _ c: CpuState, _ m: Memory) -> CpuStat
     }
 }
 
-extension CpuState.StatusRegister {
-    func setSZ(value : UInt8) -> CpuState.StatusRegister {
-        var temp = self
-        temp.remove([.Z, .S])
+extension CpuState {
+    func setSZ(value : UInt8) -> CpuState {
+        var sr = self.SR
+        sr.remove([.Z, .S])
         
-        if value == 0 { temp.insert(.Z) }
-        if (value & 0x80) != 0 { temp.insert(.S) }
+        if value == 0 { sr.insert(.Z) }
+        if (value & 0x80) != 0 { sr.insert(.S) }
         
-        return temp
+        return self.change(SR: sr)
     }
     
-    func compare(v: UInt16, register: UInt8) -> CpuState.StatusRegister {
-        var temp          = self
+    func compare(v: UInt16, register: UInt8) -> CpuState {
+        var sr            = self.SR
         let registerValue = Int8(bitPattern: register)
         let byteValue     = Int8(bitPattern: UInt8(truncatingBitPattern:v))
         
-        temp.remove([.Z, .S, .C])
+        sr.remove([.Z, .S, .C])
         
         if registerValue == byteValue {
-            temp.insert([.C, .Z])
+            sr.insert([.C, .Z])
         }
         else if registerValue > byteValue {
-            temp.insert(.C)
+            sr.insert(.C)
         }
         
         if (registerValue - byteValue) < 0 {
-            temp.insert(.S)
+            sr.insert(.S)
         }
         
-        return temp
+        return self.change(SR: sr)
     }
 }
 
@@ -162,10 +162,7 @@ func ADC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 
 func AND(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let f = c.A & getValue(v, m)
-    return c.change(
-        A: f,
-        SR: c.SR.setSZ(f)
-    )
+    return c.change(A: f).setSZ(f)
 }
 
 func ASL(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -349,67 +346,52 @@ func CLV(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 
 
 func CMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(SR: c.SR.compare(UInt16(getValue(v, m)), register: c.A))
+    return c.compare(UInt16(getValue(v, m)), register: c.A)
 }
 
 func CPX(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(SR: c.SR.compare(UInt16(getValue(v, m)), register: c.X))
+    return c.compare(UInt16(getValue(v, m)), register: c.X)
 }
 
 func CPY(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(SR: c.SR.compare(UInt16(getValue(v, m)), register: c.Y))
+    return c.compare(UInt16(getValue(v, m)), register: c.Y)
 }
 
 func DEC(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = (getValue(value, m) &- 1)
-    return setValue(value, v, c, m).change(SR: c.SR.setSZ(v))
+    return setValue(value, v, c, m).setSZ(v)
 }
 
 func DEX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.X &- 1
-    return c.change(
-        X:  v,
-        SR: c.SR.setSZ(v)
-    )
+    return c.change(X: v).setSZ(v)
 }
 
 func DEY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.Y &- 1
-    return c.change(
-        Y:  v,
-        SR: c.SR.setSZ(v)
-    )
+    return c.change(Y: v).setSZ(v)
 }
 
 func EOR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = getValue(v, m)
     let x = c.A ^ v
     
-    return c.change(
-        A: x,
-        SR: c.SR.setSZ(x)
-    )
+    return c.change(A: x).setSZ(x)
 }
 
 func INC(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    let v = (getValue(value, m) &+ 1)
-    return setValue(value, v, c, m).change(SR: c.SR.setSZ(v))
+    let v = getValue(value, m) &+ 1
+    return setValue(value, v, c, m).setSZ(v)
 }
 
 func INX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.X &+ 1
-    return c.change(
-        X:  v,
-        SR: c.SR.setSZ(v)
-    )
+    return c.change(X: v).setSZ(v)
 }
 
 func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = c.Y &+ 1
-    return c.change(
-        Y:  v,
-        SR: c.SR.setSZ(v)
-    )
+    return c.change(Y: v).setSZ(v)
 }
 
 func JMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -431,26 +413,17 @@ func JSR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 
 func LDA(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = getValue(value, m)
-    return c.change(
-        A:  v,
-        SR: c.SR.setSZ(v)
-    )
+    return c.change(A: v).setSZ(v)
 }
 
 func LDX(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = getValue(value, m)
-    return c.change(
-        X:  v,
-        SR: c.SR.setSZ(v)
-    )
+    return c.change(X: v).setSZ(v)
 }
 
 func LDY(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let v = getValue(value, m)
-    return c.change(
-        Y:  v,
-        SR: c.SR.setSZ(v)
-    )
+    return c.change(Y: v).setSZ(v)
 }
 
 func LSR(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -463,17 +436,14 @@ func LSR(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
         sr.insert(.C)
     }
     
-    return setValue(value, r, c, m).change(SR:sr.setSZ(r))
+    return setValue(value, r, c, m).change(SR: sr).setSZ(r)
 }
 
 func NOP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
 
 func ORA(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let f = c.A | getValue(v, m)
-    return c.change(
-        A: f,
-        SR: c.SR.setSZ(f)
-    )
+    return c.change(A: f).setSZ(f)
 }
 
 func PHA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -486,10 +456,7 @@ func PHP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 
 func PLA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     let (v, cpu) = c.popStackByte(m)
-    return cpu.change(
-        A: v,
-        SR: c.SR.setSZ(v)
-    )
+    return cpu.change(A: v).setSZ(v)
 }
 
 func PLP(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -507,7 +474,7 @@ func ROL(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     var sr     = c.SR
     if (value & 0x80) != 0 { sr.insert(.C) } else { sr.remove(.C) }
     
-    return setValue(v, result, c, m).change(SR: sr.setSZ(result))
+    return setValue(v, result, c, m).change(SR: sr).setSZ(result)
 }
 
 func ROR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -518,7 +485,7 @@ func ROR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     var sr     = c.SR
     if (value & 0x01) != 0 { sr.insert(.C) } else { sr.remove(.C) }
     
-    return setValue(v, result, c, m).change(SR: sr.setSZ(result))
+    return setValue(v, result, c, m).change(SR: sr).setSZ(result)
 }
 
 func RTI(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -646,44 +613,27 @@ func STY(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func TAX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(
-        X: c.A,
-        SR: c.SR.setSZ(c.A)
-    )
+    return c.change(X: c.A).setSZ(c.A)
 }
 
 func TAY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(
-        Y: c.A,
-        SR: c.SR.setSZ(c.A)
-    )
+    return c.change(Y: c.A).setSZ(c.A)
 }
 
 func TSX(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(
-        X: c.SP,
-        SR: c.SR.setSZ(c.SP)
-    )
+    return c.change(X: c.SP).setSZ(c.SP)
 }
 
 func TXA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(
-        A: c.X,
-        SR: c.SR.setSZ(c.X)
-    )
+    return c.change(A: c.X).setSZ(c.X)
 }
 
 func TXS(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(
-        SP: c.X
-    )
+    return c.change(SP: c.X)
 }
 
 func TYA(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.change(
-        A: c.Y,
-        SR: c.SR.setSZ(c.Y)
-    )
+    return c.change(A: c.Y).setSZ(c.Y)
 }
 
 func ill(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState { return c }
