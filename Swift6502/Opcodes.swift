@@ -98,6 +98,20 @@ extension CpuState {
     func changeRegisterY(v : UInt8) -> CpuState {
         return self.change(Y: v).setSZ(v)
     }
+    
+    func branch(v: OpcodeValue, condition: Bool) -> CpuState {
+        switch v {
+        case .Address(let a):
+            if condition {
+                return self.change(PC: a)
+            }
+            else {
+                return self
+            }
+        default:
+            return self
+        }
+    }
 }
 
 func ADC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -199,45 +213,15 @@ func ASL(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func BCC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a):
-        if c.SR.isSupersetOf(.C) {
-            return c
-        }
-        else {
-            return c.change(PC: a)
-        }
-    default:
-        return c
-    }
+    return c.branch(v, condition: !c.SR.isSupersetOf(.C))
 }
 
 func BCS(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a):
-        if c.SR.isSupersetOf(.C) {
-            return c.change(PC: a)
-        }
-        else {
-            return c
-        }
-    default:
-        return c
-    }
+    return c.branch(v, condition: c.SR.isSupersetOf(.C))
 }
 
 func BEQ(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a):
-        if c.SR.isSupersetOf(.Z) {
-            return c.change(PC: a)
-        }
-        else {
-            return c
-        }
-    default:
-        return c
-    }
+    return c.branch(v, condition: c.SR.isSupersetOf(.Z))
 }
 
 func BIT(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -254,45 +238,15 @@ func BIT(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func BMI(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a):
-        if c.SR.isSupersetOf(.S) {
-            return c.change(PC: a)
-        }
-        else {
-            return c
-        }
-    default:
-        return c
-    }
+    return c.branch(v, condition: c.SR.isSupersetOf(.S))
 }
 
 func BNE(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a):
-        if c.SR.isSupersetOf(.Z) {
-            return c
-        }
-        else {
-            return c.change(PC: a)
-        }
-    default:
-        return c
-    }
+    return c.branch(v, condition: !c.SR.isSupersetOf(.Z))
 }
 
 func BPL(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a):
-        if c.SR.isSupersetOf(.S) {
-            return c
-        }
-        else {
-            return c.change(PC: a)
-        }
-    default:
-        return c
-    }
+    return c.branch(v, condition: !c.SR.isSupersetOf(.S))
 }
 
 func BRK(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -305,31 +259,11 @@ func BRK(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func BVC(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a):
-        if c.SR.isSupersetOf(.V) {
-            return c
-        }
-        else {
-            return c.change(PC: a)
-        }
-    default:
-        return c
-    }
+    return c.branch(v, condition: !c.SR.isSupersetOf(.V))
 }
 
 func BVS(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a):
-        if c.SR.isSupersetOf(.V) {
-            return c.change(PC: a)
-        }
-        else {
-            return c
-        }
-    default:
-        return c
-    }
+    return c.branch(v, condition: c.SR.isSupersetOf(.V))
 }
 
 func CLC(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
@@ -407,10 +341,7 @@ func INY(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
 }
 
 func JMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    switch v {
-    case .Address(let a): return c.change(PC: a)
-    default:              return c
-    }
+    return c.branch(v, condition: true)
 }
 
 func JSR(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
