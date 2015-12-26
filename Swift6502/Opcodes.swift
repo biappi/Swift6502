@@ -59,12 +59,12 @@ extension CpuState {
     func pushStackByte(v: UInt8, into memory: Memory) -> CpuState {
         memory.changeByteAt(self.SP16, to: v)
         return self.change(
-            SP: self.SP - 1
+            SP: self.SP &- 1
         )
     }
     
     func popStackByte(memory: Memory) -> (UInt8, CpuState) {
-        let cpuState = self.change(SP: self.SP + 1)
+        let cpuState = self.change(SP: self.SP &+ 1)
         
         return (
             memory.byteAt(cpuState.SP16),
