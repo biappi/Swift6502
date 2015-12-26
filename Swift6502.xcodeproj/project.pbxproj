@@ -14,6 +14,7 @@
 		26CD88C11C2EE61D00514A3C /* OpcodeTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CCE1BCDB90600613431 /* OpcodeTable.swift */; };
 		26CD88C21C2EE62000514A3C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1414721BCDD63000E5A177 /* Utils.swift */; };
 		26CD88C41C2EF0BA00514A3C /* StolenOpcodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CD88C31C2EF0BA00514A3C /* StolenOpcodeTests.swift */; };
+		26CD88C71C2F38AA00514A3C /* Disassembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CD88C51C2F256600514A3C /* Disassembler.swift */; };
 		3F1414731BCDD63000E5A177 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1414721BCDD63000E5A177 /* Utils.swift */; };
 		3F5C2CF01BCDCA6700613431 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CEF1BCDCA6700613431 /* main.swift */; };
 		3F5C2CF41BCDCA9E00613431 /* AddressingModes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CCC1BCDB87A00613431 /* AddressingModes.swift */; };
@@ -42,6 +43,7 @@
 		26786B491C2ED59400F29F6A /* Swift6502Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swift6502Tests.swift; sourceTree = "<group>"; };
 		26786B4B1C2ED59400F29F6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26CD88C31C2EF0BA00514A3C /* StolenOpcodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StolenOpcodeTests.swift; sourceTree = "<group>"; };
+		26CD88C51C2F256600514A3C /* Disassembler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Disassembler.swift; sourceTree = "<group>"; };
 		3F1414721BCDD63000E5A177 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		3F5C2CC81BCDB55000613431 /* CPU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
 		3F5C2CCA1BCDB71C00613431 /* Opcodes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Opcodes.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				3F5C2CCA1BCDB71C00613431 /* Opcodes.swift */,
 				3F5C2CCE1BCDB90600613431 /* OpcodeTable.swift */,
 				3F1414721BCDD63000E5A177 /* Utils.swift */,
+				26CD88C51C2F256600514A3C /* Disassembler.swift */,
 			);
 			path = Swift6502;
 			sourceTree = "<group>";
@@ -243,6 +246,7 @@
 				3F5C2CF91BCDCA9E00613431 /* character.swift in Sources */,
 				3F5C2CFA1BCDCA9E00613431 /* kernal.swift in Sources */,
 				3F5C2CF01BCDCA6700613431 /* main.swift in Sources */,
+				26CD88C71C2F38AA00514A3C /* Disassembler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

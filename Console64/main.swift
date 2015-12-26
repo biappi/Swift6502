@@ -50,8 +50,9 @@ var cpu = CpuState()
 cpu.PC = mem.wordAt(0xfffc)
 
 for i in 0..<1000000 {
-    let s = String(format: "<PC: %04x>", arguments: [cpu.PC])
-    print(s)
+    print(disassemble(cpu.PC, mem: mem))
+    print(cpu.description())
+    print(" - \n")
     
     if cpu.PC == 0xffd2 {
         // CHROUT
