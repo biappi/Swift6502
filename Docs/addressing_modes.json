@@ -1,0 +1,67 @@
+{
+    "imp": {
+        "size":   1,
+        "format": ""
+    },
+
+    "imm": {
+        "size":   2,
+        "format": " #$%02X"
+    },
+
+    "zpg": {
+        "size":   2,
+        "format": " $%02X"
+    },
+
+    "acc": {
+        "size":   1,
+        "format": " A"
+    },
+
+    "abs": {
+        "size":   3,
+        "format": " $%04X"
+    },
+
+    "zpx": {
+        "size":   2,
+        "format": " $%02X, X"
+    },
+
+    "zpy": {
+        "size":   2,
+        "format": " $%04X, Y"
+    },
+
+    "abx": {
+        "size":   3,
+        "format": " $%04X, X"
+    },
+
+    "aby": {
+        "size":   3,
+        "format": " $%04X, Y"
+    },
+
+    "iny": {
+        "size":   2,
+        "format": " ($%04X), Y"
+    },
+
+    "inx": {
+        "size":   2,
+        "format": " ($%04X), Y"
+    },
+
+    "ind": {
+        "size":   3,
+        "format": " ($%04X)"
+    },
+
+    "rel": {
+        "size":   2,
+        "format": " $%04X"
+    }
+}
+
