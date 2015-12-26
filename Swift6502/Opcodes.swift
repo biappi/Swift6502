@@ -73,8 +73,8 @@ extension CpuState {
     }
     
     func pushStackWord(v: UInt16, into memory: Memory) -> CpuState {
-        let cpu1 = self.pushStackByte(UInt8(v >>  8), into: memory)
-        let cpu2 = cpu1.pushStackByte(UInt8(v & 0xf), into: memory)
+        let cpu1 = self.pushStackByte(UInt8(v >>   8), into: memory)
+        let cpu2 = cpu1.pushStackByte(UInt8(v & 0xff), into: memory)
         return cpu2
     }
 
