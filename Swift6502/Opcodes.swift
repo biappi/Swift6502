@@ -47,7 +47,7 @@ extension CpuState {
             sr.insert(.C)
         }
         
-        if (registerValue - byteValue) < 0 {
+        if (registerValue &- byteValue) < 0 {
             sr.insert(.S)
         }
         
