@@ -6,6 +6,88 @@
 //  Copyright © 2015 Antonio Malara. All rights reserved.
 //
 
+enum AddressingMode {
+    case Implied
+    case Immediate
+    case ZeroPage
+    case Accumulator
+    case Absolute
+    case ZeroPageX
+    case ZeroPageY
+    case AbsoluteX
+    case AbsoluteY
+    case IndexedX
+    case IndexedY
+    case Indirect
+    case Relative
+}
+
+enum OpcodeValue {
+    case Address(UInt16)
+    case Accumulator(UInt8)
+    case Implied
+}
+
+enum Instruction {
+    case ADC
+    case AND
+    case ASL
+    case BCC
+    case BCS
+    case BEQ
+    case BIT
+    case BMI
+    case BNE
+    case BPL
+    case BRK
+    case BVC
+    case BVS
+    case CLC
+    case CLD
+    case CLI
+    case CLV
+    case CMP
+    case CPX
+    case CPY
+    case DEC
+    case DEX
+    case DEY
+    case EOR
+    case INC
+    case INX
+    case INY
+    case JMP
+    case JSR
+    case LDA
+    case LDX
+    case LDY
+    case LSR
+    case NOP
+    case ORA
+    case PHA
+    case PHP
+    case PLA
+    case PLP
+    case ROL
+    case ROR
+    case RTI
+    case RTS
+    case SBC
+    case SEC
+    case SED
+    case SEI
+    case STA
+    case STX
+    case STY
+    case TAX
+    case TAY
+    case TSX
+    case TXA
+    case TXS
+    case TYA
+    case ill
+}
+
 typealias Address = UInt16
 
 protocol Memory {
@@ -29,20 +111,8 @@ extension Memory {
     }
 }
 
-enum OpcodeValue {
-    case Address(UInt16)
-    case Accumulator(UInt8)
-    case Implied
-}
-
 typealias OpcodeImplementation   = (OpcodeValue, CpuState, Memory) -> CpuState
 typealias AddressingModeResolver = (CpuState, Memory) -> OpcodeValue
-
-struct AddressingMode {
-    let name            : String
-    let instructionSize : UInt16
-    let resolve         : AddressingModeResolver
-}
 
 struct CpuState : Equatable {
     struct StatusRegister : OptionSetType {
@@ -109,10 +179,10 @@ extension CpuState {
 func CpuStep(cpuState: CpuState, memory: Memory) -> CpuState {
     let code     = Int(memory.byteAt(cpuState.PC))
     let opcode   = Opcodes[code]
-    let value    = opcode.1.resolve(cpuState, memory)
-    let newPC    = cpuState.PC + opcode.1.instructionSize
+    let value    = resolveOpcodeValue(opcode.1, cpu: cpuState, mem: memory)
+    let newPC    = cpuState.PC + UInt16(instructionSize(opcode.1))
     let newState = cpuState.change(PC: newPC)
-    let endState = opcode.2(value, newState, memory)
+    let endState = execute(opcode.0, value: value, cpu: newState, mem: memory)
     
     return endState
 }
