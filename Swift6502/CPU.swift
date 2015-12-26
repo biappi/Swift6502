@@ -116,3 +116,15 @@ func CpuStep(cpuState: CpuState, memory: Memory) -> CpuState {
     
     return endState
 }
+
+class ArrayMemory : Memory {
+    var ram : [UInt8] = [UInt8].init(count: 0x10000, repeatedValue: 0)
+    
+    func byteAt(address: Address) -> UInt8 {
+        return ram[Int(address)]
+    }
+    
+    func changeByteAt(address: Address, to: UInt8) {
+        ram[Int(address)] = to
+    }
+}

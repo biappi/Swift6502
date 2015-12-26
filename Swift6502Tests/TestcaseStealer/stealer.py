@@ -127,7 +127,7 @@ def jsonprinter(cases):
     print json.dumps(cases, sort_keys=True, indent=4)
 
 def s_state(d):
-    print '        TestState(CpuState(A:0x%02x, X:0x%02x, Y:0x%02x, SP:0x%02x, PC:0x%04x, SR:SR(0x%02x)),' % (
+    print '            TestState(CpuState(A:0x%02x, X:0x%02x, Y:0x%02x, SP:0x%02x, PC:0x%04x, SR:SR(0x%02x)),' % (
         d['a'],
         d['x'],
         d['y'],
@@ -139,9 +139,9 @@ def s_state(d):
 def s_mem(d, c=False):
     c = ',' if c else ''
     array = ', '.join("0x%04x:0x%02x" % i for i in d.iteritems())
-    print '                  [%s])%s' % (array, c)
+    print '                      [%s])%s' % (array, c)
 
-def swiftprinter(cases):
+def swift_prologue():
     print """func SR(i: UInt8) -> CpuState.StatusRegister {
     return CpuState.StatusRegister(rawValue: i)
 }
@@ -169,6 +169,9 @@ struct TestCase {
 }
 """
 
+def swiftprinter(cases):
+    swift_prologue()
+
     print "let tests_6502 : [TestCase] = ["
     for name, case in cases.iteritems():
         print '    TestCase('
@@ -180,7 +183,23 @@ struct TestCase {
         print '    ),'
     print ']'
 
+def xctestprinter(cases):
+    swift_prologue()
+
+    print "class OpcodeTests : OpcodeTestBase {"
+    for name, case in cases.iteritems():
+        print """
+    func %s() {
+        do_the_test(""" % (name)
+        s_state(case['pre']['regs'])
+        s_mem(case['pre']['mem'], True)
+        s_state(case['post']['regs'])
+        s_mem(case['post']['mem'])
+        print """        )
+    }"""
+
+    print "}"
+
 if __name__ == '__main__':
     cases = steal()
-    #cases = dict(list(cases.iteritems())[:10])
-    swiftprinter(cases)
+    xctestprinter(cases)

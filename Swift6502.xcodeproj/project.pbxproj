@@ -7,8 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3F1414731BCDD63000E5A177 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1414721BCDD63000E5A177 /* Utils.swift */; settings = {ASSET_TAGS = (); }; };
-		3F2BD8811C14BA41009ED37B /* stolen_cases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2BD8801C14BA41009ED37B /* stolen_cases.swift */; settings = {ASSET_TAGS = (); }; };
+		26786B4A1C2ED59400F29F6A /* Swift6502Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26786B491C2ED59400F29F6A /* Swift6502Tests.swift */; };
+		26CD88BE1C2EE61700514A3C /* AddressingModes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CCC1BCDB87A00613431 /* AddressingModes.swift */; };
+		26CD88BF1C2EE61900514A3C /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CC81BCDB55000613431 /* CPU.swift */; };
+		26CD88C01C2EE61B00514A3C /* Opcodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CCA1BCDB71C00613431 /* Opcodes.swift */; };
+		26CD88C11C2EE61D00514A3C /* OpcodeTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CCE1BCDB90600613431 /* OpcodeTable.swift */; };
+		26CD88C21C2EE62000514A3C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1414721BCDD63000E5A177 /* Utils.swift */; };
+		26CD88C41C2EF0BA00514A3C /* StolenOpcodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CD88C31C2EF0BA00514A3C /* StolenOpcodeTests.swift */; };
+		3F1414731BCDD63000E5A177 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1414721BCDD63000E5A177 /* Utils.swift */; };
 		3F5C2CF01BCDCA6700613431 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CEF1BCDCA6700613431 /* main.swift */; };
 		3F5C2CF41BCDCA9E00613431 /* AddressingModes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CCC1BCDB87A00613431 /* AddressingModes.swift */; };
 		3F5C2CF51BCDCA9E00613431 /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5C2CC81BCDB55000613431 /* CPU.swift */; };
@@ -32,8 +38,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		26786B471C2ED59400F29F6A /* Swift6502Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Swift6502Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		26786B491C2ED59400F29F6A /* Swift6502Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swift6502Tests.swift; sourceTree = "<group>"; };
+		26786B4B1C2ED59400F29F6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		26CD88C31C2EF0BA00514A3C /* StolenOpcodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StolenOpcodeTests.swift; sourceTree = "<group>"; };
 		3F1414721BCDD63000E5A177 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		3F2BD8801C14BA41009ED37B /* stolen_cases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = stolen_cases.swift; path = TestcaseStealer/stolen_cases.swift; sourceTree = SOURCE_ROOT; };
 		3F5C2CC81BCDB55000613431 /* CPU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
 		3F5C2CCA1BCDB71C00613431 /* Opcodes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Opcodes.swift; sourceTree = "<group>"; };
 		3F5C2CCC1BCDB87A00613431 /* AddressingModes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressingModes.swift; sourceTree = "<group>"; };
@@ -46,6 +55,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		26786B441C2ED59400F29F6A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3F5C2CEA1BCDCA6700613431 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -56,12 +72,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		26786B481C2ED59400F29F6A /* Swift6502Tests */ = {
+			isa = PBXGroup;
+			children = (
+				26CD88C31C2EF0BA00514A3C /* StolenOpcodeTests.swift */,
+				26786B491C2ED59400F29F6A /* Swift6502Tests.swift */,
+				26786B4B1C2ED59400F29F6A /* Info.plist */,
+			);
+			path = Swift6502Tests;
+			sourceTree = "<group>";
+		};
 		3F5C2CB51BCDB53500613431 = {
 			isa = PBXGroup;
 			children = (
 				3F5C2CC01BCDB53500613431 /* Swift6502 */,
 				3F5C2CDF1BCDC13100613431 /* C64 Roms */,
 				3F5C2CEE1BCDCA6700613431 /* Console64 */,
+				26786B481C2ED59400F29F6A /* Swift6502Tests */,
 				3F5C2CBF1BCDB53500613431 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -70,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				3F5C2CED1BCDCA6700613431 /* Console64 */,
+				26786B471C2ED59400F29F6A /* Swift6502Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,7 +128,6 @@
 			isa = PBXGroup;
 			children = (
 				3F5C2CEF1BCDCA6700613431 /* main.swift */,
-				3F2BD8801C14BA41009ED37B /* stolen_cases.swift */,
 			);
 			path = Console64;
 			sourceTree = "<group>";
@@ -108,6 +135,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		26786B461C2ED59400F29F6A /* Swift6502Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26786B4E1C2ED59400F29F6A /* Build configuration list for PBXNativeTarget "Swift6502Tests" */;
+			buildPhases = (
+				26786B431C2ED59400F29F6A /* Sources */,
+				26786B441C2ED59400F29F6A /* Frameworks */,
+				26786B451C2ED59400F29F6A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Swift6502Tests;
+			productName = Swift6502Tests;
+			productReference = 26786B471C2ED59400F29F6A /* Swift6502Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		3F5C2CEC1BCDCA6700613431 /* Console64 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3F5C2CF11BCDCA6700613431 /* Build configuration list for PBXNativeTarget "Console64" */;
@@ -131,9 +175,13 @@
 		3F5C2CB61BCDB53500613431 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Antonio Malara";
 				TargetAttributes = {
+					26786B461C2ED59400F29F6A = {
+						CreatedOnToolsVersion = 7.2;
+					};
 					3F5C2CEC1BCDCA6700613431 = {
 						CreatedOnToolsVersion = 7.0.1;
 					};
@@ -152,18 +200,42 @@
 			projectRoot = "";
 			targets = (
 				3F5C2CEC1BCDCA6700613431 /* Console64 */,
+				26786B461C2ED59400F29F6A /* Swift6502Tests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		26786B451C2ED59400F29F6A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		26786B431C2ED59400F29F6A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26CD88BF1C2EE61900514A3C /* CPU.swift in Sources */,
+				26CD88BE1C2EE61700514A3C /* AddressingModes.swift in Sources */,
+				26CD88C01C2EE61B00514A3C /* Opcodes.swift in Sources */,
+				26CD88C21C2EE62000514A3C /* Utils.swift in Sources */,
+				26CD88C11C2EE61D00514A3C /* OpcodeTable.swift in Sources */,
+				26CD88C41C2EF0BA00514A3C /* StolenOpcodeTests.swift in Sources */,
+				26786B4A1C2ED59400F29F6A /* Swift6502Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3F5C2CE91BCDCA6700613431 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				3F5C2CF41BCDCA9E00613431 /* AddressingModes.swift in Sources */,
 				3F5C2CF51BCDCA9E00613431 /* CPU.swift in Sources */,
-				3F2BD8811C14BA41009ED37B /* stolen_cases.swift in Sources */,
 				3F1414731BCDD63000E5A177 /* Utils.swift in Sources */,
 				3F5C2CF61BCDCA9E00613431 /* Opcodes.swift in Sources */,
 				3F5C2CF71BCDCA9E00613431 /* OpcodeTable.swift in Sources */,
@@ -177,6 +249,30 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		26786B4C1C2ED59400F29F6A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Swift6502Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = name.malara.antonio.Swift6502Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		26786B4D1C2ED59400F29F6A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Swift6502Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = name.malara.antonio.Swift6502Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		3F5C2CC31BCDB53500613431 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -272,6 +368,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		26786B4E1C2ED59400F29F6A /* Build configuration list for PBXNativeTarget "Swift6502Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26786B4C1C2ED59400F29F6A /* Debug */,
+				26786B4D1C2ED59400F29F6A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3F5C2CB91BCDB53500613431 /* Build configuration list for PBXProject "Swift6502" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

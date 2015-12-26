@@ -8,18 +8,6 @@
 
 import Foundation
 
-class ArrayMemory : Memory {
-    var ram : [UInt8] = [UInt8].init(count: 0x10000, repeatedValue: 0)
-    
-    func byteAt(address: Address) -> UInt8 {
-            return ram[Int(address)]
-    }
-    
-    func changeByteAt(address: Address, to: UInt8) {
-        ram[Int(address)] = to
-    }
-}
-
 class C64MemoryLayout : Memory {
     let kernal : [UInt8]
     let basic  : [UInt8]
@@ -55,52 +43,6 @@ class C64MemoryLayout : Memory {
         ram[Int(address)] = to
     }
 }
-
-var failed = 0
-var success = 0
-
-for test in tests_6502 {
-    var ok = true
-    
-    let mem = ArrayMemory()
-    
-    for (addr, value) in test.pre.mem {
-        mem.changeByteAt(addr, to: value)
-    }
-    
-    let state = CpuStep(test.pre.cpu, memory: mem)
-    
-    print("Test \(test.name)")
-    
-    if state != test.post.cpu {
-        print("Got state:")
-        print(state.description())
-        print("Expected:")
-        print(test.post.cpu.description())
-        ok = false
-    }
-    
-    for (addr, value) in test.post.mem {
-        if mem.byteAt(addr) != value {
-            print("Failed, address \(addr)")
-            print("Computed \(mem.byteAt(addr))")
-            print("Expected \(value)")
-            ok = false
-        }
-    }
-    
-    if (ok) {
-        print("Succeded\n\n")
-        success++
-    }
-    else {
-        print("Failed\n\n")
-        failed++
-    }
-}
-
-print ("success: \(success) fail: \(failed)")
-
 exit(0)
 
 let c64boottrace = [

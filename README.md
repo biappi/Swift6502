@@ -12,7 +12,6 @@ Try to get from a 'toy' phase to a somewhat decent project.
 
 In no particular order:
 
-- write a proper test runner
 - change the structure of the project to conform to the Swift package manager
 - documentation
 - write a monitor
