@@ -50,10 +50,6 @@ var cpu = CpuState()
 cpu.PC = mem.wordAt(0xfffc)
 
 for i in 0..<1000000 {
-    print(disassemble(cpu.PC, mem: mem))
-    print(cpu.description())
-    print(" - \n")
-    
     if cpu.PC == 0xffd2 {
         // CHROUT
         fputc(Int32(cpu.A), stdout)
