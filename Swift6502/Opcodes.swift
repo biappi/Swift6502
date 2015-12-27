@@ -33,21 +33,19 @@ extension CpuState {
         return self.change(SR: sr)
     }
     
-    func compare(v: UInt16, register: UInt8) -> CpuState {
-        var sr            = self.SR
-        let registerValue = Int8(bitPattern: register)
-        let byteValue     = Int8(bitPattern: UInt8(truncatingBitPattern:v))
+    func compare(value: UInt8, register: UInt8) -> CpuState {
+        var sr = self.SR
         
         sr.remove([.Z, .S, .C])
         
-        if registerValue == byteValue {
+        if register == value {
             sr.insert([.C, .Z])
         }
-        else if registerValue > byteValue {
+        else if register > value {
             sr.insert(.C)
         }
         
-        if (registerValue &- byteValue) < 0 {
+        if ((register &- value) & 0x80) == 0x80 {
             sr.insert(.S)
         }
         
@@ -300,17 +298,16 @@ func CLV(_: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
     return c.change(SR: x)
 }
 
-
 func CMP(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.compare(UInt16(getValue(v, m)), register: c.A)
+    return c.compare(getValue(v, m), register: c.A)
 }
 
 func CPX(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.compare(UInt16(getValue(v, m)), register: c.X)
+    return c.compare(getValue(v, m), register: c.X)
 }
 
 func CPY(v: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
-    return c.compare(UInt16(getValue(v, m)), register: c.Y)
+    return c.compare(getValue(v, m), register: c.Y)
 }
 
 func DEC(value: OpcodeValue, c: CpuState, m: Memory) -> CpuState {
